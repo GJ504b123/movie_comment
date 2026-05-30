@@ -4,6 +4,6 @@
 
 | 日期 | 切片 | 分支 | 报告 | 状态 |
 |---|---|---|---|---|
-| —（示例） | 基础设施：Result + 全局异常 + Swagger + Flyway 基线 | feat/infra-base | — | 待开始 |
+| 2026-05-30 | 基础设施：Result + 全局异常 + Swagger + Flyway 基线 | feat/infra-base | [20260530-infra-base.md](20260530-infra-base.md) | ✅ 完成 |
 
 > 本表由 DeepSeek 维护。
