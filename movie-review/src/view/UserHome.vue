@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50 font-sans">
     
-    <NavBar />
+    <NavBar :username="mockLogin.user.username" />
 
     <div class="max-w-7xl mx-auto px-6 py-8 space-y-12">
       
@@ -56,7 +56,9 @@
 import MovieCard from '../components/MovieCard.vue'
 import NavBar from '../components/NavBar.vue'
 import {mockMovieList} from '../mock/movieData'
+import {mockLoginResponse} from '../mock/movieData'
 const mockMovie = mockMovieList
+const mockLogin = mockLoginResponse
 console.log(mockMovie)
 </script>
 

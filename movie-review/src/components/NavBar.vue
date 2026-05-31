@@ -15,7 +15,7 @@
     </div>
 
     <div class="flex   items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-      <span class="text-gray-700 font-medium">汶汶</span>
+      <span class="text-gray-700 font-medium">{{username}}</span>
       <img 
         src="https://api.dicebear.com/7.x/avataaars/svg?seed=wenwen" 
         alt="用户头像" 
@@ -27,4 +27,8 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  username:{  type:String,
+  required:true}
+})
 </script>
