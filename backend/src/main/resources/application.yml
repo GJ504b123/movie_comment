@@ -30,6 +30,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+jwt:
+  secret: ${JWT_SECRET:default-jwt-secret-for-dev-only-change-in-production}
+  expire-minutes: ${JWT_EXPIRE_MINUTES:120}
+
 logging:
   level:
     com.movie.comment: DEBUG

@@ -1,4 +1,4 @@
-# 文件清单与调用关系（切片1完成时）
+# 文件清单与调用关系（切片2完成时）
 
 > 每新增文件在此登记。读完本文你能回答：**"这个文件干什么的、谁调它、它调谁"**。
 
@@ -161,6 +161,39 @@ user ──1:N──▶ review ◀──N:1── movie
 
 ---
 
+### security/ —— JWT 认证层（3 个文件）—— 切片2新增
+
+| 文件 | 职责 | 谁调它 | 它调谁 |
+|------|------|--------|--------|
+| `JwtUtils.java` | JWT 生成（`generate(userId,username,role)`）、解析（`Claims parse(token)`）、校验 | `UserServiceImpl.login()` 调 `generate()`；`JwtAuthFilter` 调 `parse()` | jjwt 库 |
+| `JwtAuthFilter.java` | `OncePerRequestFilter`：提取 `Authorization: Bearer <token>` → 解析 → 设 UserContext。公开路径（`/api/auth/**`、Swagger）直接放行，无 token 也放行（由 Controller 自行判断） | Spring 自动注册为过滤器 | `JwtUtils.parse()`、`UserContext.set()` |
+| `UserContext.java` | ThreadLocal 存当前请求的 `userId` / `username` / `role`。过滤器设值，请求结束 `finally` 清理 | `JwtAuthFilter` 设值 + 清理；`UserController.requireLogin()` 读值 | 无 |
+
+### dto/ —— 请求/响应对象（6 个文件）—— 切片2新增
+
+| 文件 | 职责 |
+|------|------|
+| `RegisterRequest.java` | `{username, password, email}`，`@NotBlank` / `@Size` 校验 |
+| `LoginRequest.java` | `{username, password}`，`@NotBlank` 校验 |
+| `LoginResponse.java` | `{token, user: UserVO}` |
+| `UserVO.java` | 返回前端的用户信息。`static from(User entity)` 做 entity→VO 转换，不含 password |
+| `RegisterVO.java` | `{userId, status}` |
+| `UpdateProfileRequest.java` | `{email, oldPassword, newPassword}`，全部可选 |
+
+### service/ —— 业务层（2 个文件）—— 切片2新增
+
+| 文件 | 职责 |
+|------|------|
+| `UserService.java` | 接口：register / login / getProfile / updateProfile |
+| `impl/UserServiceImpl.java` | 实现：注册（查重→BCrypt→落库 pending）、登录（查用户→验密→验状态→签 JWT→更新 lastLoginTime）、获取/更新个人信息（修改密码需旧密码） |
+
+### controller/ —— REST 入口（2 个文件）—— 切片2新增
+
+| 文件 | 接口 | 认证 |
+|------|------|------|
+| `AuthController.java` | `POST /api/auth/register`、`POST /api/auth/login` | 公开 |
+| `UserController.java` | `GET /api/user/profile`、`PUT /api/user/profile` | 需要 token |
+
 ## 测试层（src/test/）
 
 | 文件 | 职责 |
@@ -193,6 +226,11 @@ MySQL（生产） / H2（测试）
     → Result.error(code, msg)
     → JSON 返回前端
 
-鉴权路径（切片2实现）：
-  JWT 过滤器 → 解析 token → 注入当前用户 → Controller 获取
+鉴权路径：
+  HTTP 请求 → JwtAuthFilter → 解析 Authorization: Bearer <token>
+    → JwtUtils.parse(token) → Claims{sub, username, role}
+    → UserContext.set(userId, username, role)
+    → Controller.requireLogin() → UserContext.getUserId()
+    → 未登录 → throw BusinessException(401)
+    → request 结束 → UserContext.clear()（finally）
 ```

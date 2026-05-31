@@ -19,6 +19,10 @@ mybatis-plus:
       logic-delete-value: "1"
       logic-not-delete-value: "0"
 
+jwt:
+  secret: test-jwt-secret-key-for-unit-tests-32chars
+  expire-minutes: 60
+
 logging:
   level:
     com.movie.comment: DEBUG
