@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# Maven Wrapper startup script
+
+# Determine the Java command to use
+if [ -n "$JAVA_HOME" ] ; then
+    JAVACMD="$JAVA_HOME/bin/java"
+else
+    JAVACMD="java"
+fi
+
+# Resolve symlinks
+PRG="$0"
+while [ -h "$PRG" ]; do
+    ls=$(ls -ld "$PRG")
+    link=$(expr "$ls" : '.*-> \(.*\)$')
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG=$(dirname "$PRG")/"$link"
+    fi
+done
+
+# APP_HOME is the directory containing this script (same as pom.xml)
+APP_HOME=$(cd "$(dirname "$PRG")" && pwd -P)
+
+# Wrapper config
+MAVEN_USER_HOME="${MAVEN_USER_HOME:-${HOME}/.m2}"
+MAVEN_OPTS="${MAVEN_OPTS:--Dfile.encoding=UTF-8}"
+
+# Check for maven-wrapper.jar
+WRAPPER_JAR="$APP_HOME/.mvn/wrapper/maven-wrapper.jar"
+if [ ! -f "$WRAPPER_JAR" ]; then
+    echo "Downloading Maven Wrapper..."
+    JAR_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.2/maven-wrapper-3.3.2.jar"
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL -o "$WRAPPER_JAR" "$JAR_URL" || { echo "ERROR: Failed to download maven-wrapper.jar" >&2; exit 1; }
+    elif command -v wget >/dev/null 2>&1; then
+        wget -q -O "$WRAPPER_JAR" "$JAR_URL" || { echo "ERROR: Failed to download maven-wrapper.jar" >&2; exit 1; }
+    else
+        echo "ERROR: Neither curl nor wget found." >&2
+        exit 1
+    fi
+fi
+
+MAVEN_PROJECTBASEDIR="$APP_HOME"
+export MAVEN_PROJECTBASEDIR
+
+exec "$JAVACMD" \
+    $MAVEN_OPTS \
+    -classpath "$WRAPPER_JAR" \
+    "-Dmaven.multiModuleProjectDirectory=$MAVEN_PROJECTBASEDIR" \
+    org.apache.maven.wrapper.MavenWrapperMain \
+    "$@"
