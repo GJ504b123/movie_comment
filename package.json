@@ -1,8 +1,12 @@
 {
 	"dependencies": {
+		"@tailwindcss/vite": "^4.3.0",
+		"@vitejs/plugin-vue": "^6.0.7",
 		"ant-design-vue": "^4.2.6",
 		"axios": "^1.16.1",
 		"pinia": "^3.0.4",
+		"vite": "^8.0.16",
+		"vite-plugin-mock": "^3.0.2",
 		"vue-router": "^4.6.4"
 	},
 	"devDependencies": {
