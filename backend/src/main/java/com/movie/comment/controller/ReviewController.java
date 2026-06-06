@@ -1,8 +1,11 @@
 package com.movie.comment.controller;
 
+import com.movie.comment.aspect.LogAction;
+import com.movie.comment.common.ActionType;
 import com.movie.comment.common.BusinessException;
 import com.movie.comment.common.Result;
 import com.movie.comment.dto.CreateReviewRequest;
+import com.movie.comment.dto.LikeRequest;
 import com.movie.comment.dto.UpdateReviewRequest;
 import com.movie.comment.security.UserContext;
 import com.movie.comment.service.ReviewService;
@@ -35,6 +38,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "404", description = "影片不存在"),
             @ApiResponse(responseCode = "409", description = "已评论过该影片")
     })
+    @LogAction(value = ActionType.POST_REVIEW, targetParamName = "movieId")
     @PostMapping("/movies/{movieId}/reviews")
     public Result<Map<String, Long>> createReview(
             @Parameter(description = "影片 ID") @PathVariable Long movieId,
@@ -51,6 +55,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "403", description = "只能修改自己的评论"),
             @ApiResponse(responseCode = "404", description = "评论不存在")
     })
+    @LogAction(value = ActionType.UPDATE_REVIEW, targetParamName = "reviewId")
     @PutMapping("/reviews/{reviewId}")
     public Result<Void> updateReview(
             @Parameter(description = "评论 ID") @PathVariable Long reviewId,
@@ -67,12 +72,30 @@ public class ReviewController {
             @ApiResponse(responseCode = "403", description = "只能删除自己的评论"),
             @ApiResponse(responseCode = "404", description = "评论不存在")
     })
+    @LogAction(value = ActionType.DELETE_REVIEW, targetParamName = "reviewId")
     @DeleteMapping("/reviews/{reviewId}")
     public Result<Void> deleteReview(
             @Parameter(description = "评论 ID") @PathVariable Long reviewId) {
         Long userId = requireLogin();
         reviewService.deleteReview(reviewId, userId);
         return Result.ok("删除成功", null);
+    }
+
+    @Operation(summary = "点赞/取消点赞评论", description = "toggle 模式：liked=true 点赞，liked=false 取消")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "操作成功"),
+            @ApiResponse(responseCode = "401", description = "未登录"),
+            @ApiResponse(responseCode = "404", description = "评论不存在")
+    })
+    @LogAction(value = ActionType.LIKE_REVIEW, targetParamName = "reviewId")
+    @PostMapping("/reviews/{reviewId}/like")
+    public Result<Void> likeReview(
+            @Parameter(description = "评论 ID") @PathVariable Long reviewId,
+            @RequestBody LikeRequest req) {
+        Long userId = requireLogin();
+        // 点赞/取消点赞不校验本人——任何人都可以给别人点赞
+        reviewService.likeReview(reviewId, req.isLiked());
+        return Result.ok(req.isLiked() ? "点赞成功" : "取消点赞", null);
     }
 
     private Long requireLogin() {

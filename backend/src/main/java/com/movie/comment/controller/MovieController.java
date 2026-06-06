@@ -1,5 +1,7 @@
 package com.movie.comment.controller;
 
+import com.movie.comment.aspect.LogAction;
+import com.movie.comment.common.ActionType;
 import com.movie.comment.common.PageResult;
 import com.movie.comment.common.Result;
 import com.movie.comment.dto.MovieVO;
@@ -27,6 +29,7 @@ public class MovieController {
 
     @Operation(summary = "3.1 查询影片列表", description = "支持关键词模糊搜索（标题/导演/演员）和分页排序")
     @ApiResponses(@ApiResponse(responseCode = "200", description = "分页影片列表"))
+    @LogAction(ActionType.SEARCH_MOVIE)
     @GetMapping("/movies")
     public Result<PageResult<MovieVO>> listMovies(
             @Parameter(description = "搜索关键词，模糊匹配标题/导演/演员") @RequestParam(required = false) String keyword,
@@ -42,6 +45,7 @@ public class MovieController {
             @ApiResponse(responseCode = "200", description = "影片详情 + 评论列表"),
             @ApiResponse(responseCode = "404", description = "影片不存在")
     })
+    @LogAction(value = ActionType.VIEW_MOVIE_DETAIL, targetParamName = "movieId")
     @GetMapping("/movies/{movieId}")
     public Result<Map<String, Object>> getMovieDetail(
             @Parameter(description = "影片 ID") @PathVariable Long movieId,

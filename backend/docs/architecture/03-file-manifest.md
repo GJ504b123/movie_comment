@@ -1,6 +1,7 @@
-# 文件清单与调用关系（切片2完成时）
+# 文件清单与调用关系（全部切片完成后）
 
 > 每新增文件在此登记。读完本文你能回答：**"这个文件干什么的、谁调它、它调谁"**。
+> 最后更新：2026-06-06，覆盖切片1–5 + 契约补全（点赞/排行）。
 
 ---
 
@@ -222,6 +223,63 @@ user ──1:N──▶ review ◀──N:1── movie
 | `ReviewController.java` | `POST /api/movies/{id}/reviews`、`PUT /api/reviews/{id}`、`DELETE /api/reviews/{id}` | 需要 token |
 | `RankingController.java` | `GET /api/rankings`（limit/timeRange） | 可选 |
 
+### aspect/ —— AOP 切面层（2 个文件）—— 切片5新增
+
+| 文件 | 职责 | 谁调它 | 它调谁 |
+|------|------|--------|--------|
+| `LogAction.java` | `@LogAction(ActionType, targetParamName)` 注解，标在 Controller 方法上 | **AccessLogAspect** 用 `@Around("@annotation(logAction)")` 拦截；**Controller** 标注它 | 无 |
+| `AccessLogAspect.java` | `@Aspect @Component` 切面。拦截 `@LogAction` 方法，方法成功后从 UserContext 取 userId/username，从注解取 action，从参数取 targetId，从 HttpServletRequest 取 IP/UA，写入 `access_log` 表 | Spring AOP 自动织入 | `AccessLogMapper.insert()`、`UserContext`、`HttpServletRequest` |
+
+**注解覆盖（12 个动作，13 个端点）：** 见 `20260606-aop-log.md`。
+**特殊处理：** register/login 不走 AOP（无 UserContext），AuthController 方法体内手动调 `accessLogMapper.insert()`。
+
+### dto/ —— 管理员相关（6 个文件）—— 切片4新增
+
+| 文件 | 职责 |
+|------|------|
+| `AuditRequest.java` | `{action: "approve"/"reject", reason}` |
+| `AddMovieRequest.java` | `{title, description, releaseDate, coverUrl, director, cast}` |
+| `UpdateMovieRequest.java` | 同 AddMovieRequest，全部可选 |
+| `HideReviewRequest.java` | `{hidden: boolean}` |
+| `AdminReviewVO.java` | 管理端评论列表项（含 movieTitle、username、hidden），`static from(Review, movieTitle, username)` |
+| `AccessLogVO.java` | 日志列表项，`static from(AccessLog)` |
+
+### dto/ —— 契约补全（1 个文件）
+
+| 文件 | 职责 |
+|------|------|
+| `LikeRequest.java` | `{liked: boolean}`，点赞/取消点赞 toggle |
+
+### service/ —— 管理员业务层（2 个文件）—— 切片4新增
+
+| 文件 | 职责 |
+|------|------|
+| `AdminService.java` | 接口：getPendingUsers / auditUser / addMovie / updateMovie / deleteMovie / getReviews / setReviewVisibility / getLogs |
+| `impl/AdminServiceImpl.java` | 实现：审批校验、影片软删除 `deleteById`、影评隐藏联动评分冗余 `refreshMovieScore()`、日志多维过滤查询 |
+
+### service/ —— 接口更新（切片5 + 补全）
+
+| 文件 | 改动 |
+|------|------|
+| `ReviewService.java` | 新增 `likeReview(reviewId, liked)` |
+| `impl/ReviewServiceImpl.java` | `likeReview`：`liked=true` → `like_count+1`；`false` → `-1`（下限 0） |
+
+### controller/ —— 管理员 REST（1 个文件）—— 切片4新增
+
+| 文件 | 接口 | 认证 |
+|------|------|------|
+| `AdminController.java` | `GET /admin/users/pending`、`PUT /admin/users/{id}/audit`、`POST /admin/movies`、`PUT /admin/movies/{id}`、`DELETE /admin/movies/{id}`、`GET /admin/reviews`、`PUT /admin/reviews/{id}/visibility`、`GET /admin/logs` | 需要 admin token |
+
+### controller/ —— 接口更新（切片5 + 补全）
+
+| 文件 | 改动 |
+|------|------|
+| `AuthController.java` | register/login 方法体末尾手动插 `access_log`（无 UserContext 场景） |
+| `MovieController.java` | 加 `@LogAction(SEARCH_MOVIE)` / `@LogAction(VIEW_MOVIE_DETAIL)` |
+| `ReviewController.java` | 加 `@LogAction(POST_REVIEW/UPDATE_REVIEW/DELETE_REVIEW/LIKE_REVIEW)`；新增 `POST /api/reviews/{id}/like` 端点 |
+| `RankingController.java` | 加 `@LogAction(VIEW_RANKING)`；新增 `sortBy` 参数（rating/reviewCount），limit 默认 100 上限 100 |
+| `AdminController.java` | 加 `@LogAction(AUDIT_USER/ADD_MOVIE/EDIT_MOVIE/DELETE_MOVIE/HIDE_REVIEW)` |
+
 ## 测试层（src/test/）
 
 | 文件 | 职责 |
@@ -229,7 +287,8 @@ user ──1:N──▶ review ◀──N:1── movie
 | `resources/application.yml` | 测试用 H2 内存库配置。URL 加 `MODE=MySQL;NON_KEYWORDS=USER` 兼容 MySQL 语法、避免 `user` 保留字冲突 |
 | `java/.../InfrastructureTest.java` | 3 个测试：`contextLoads`（Spring 启动）、`userCrud`（BCrypt + 持久化）、`movieCrud`（软删除过滤） |
 | `java/.../AuthTest.java` | 5 个测试：注册/登录/重复注册/无token/错误密码 |
-| `java/.../MovieReviewTest.java` | 12 个测试：影片列表/搜索/详情/发评/重复评/无认证评/改评/删评/排行榜 |
+| `java/.../MovieReviewTest.java` | 26 个测试：影片列表/搜索/详情/发评/重复评/无认证评/改评/删评/越权/评分冗余/排行榜/软删除 |
+| `java/.../AdminTest.java` | 32 个测试：权限(401/403)、待审列表/审批、影片 CRUD、影评管理/隐藏联动、日志查询、点赞 toggle(4个)、排行榜 sortBy=reviewCount、日志验证(3个)、软删除 |
 
 ---
 
@@ -240,7 +299,10 @@ HTTP 请求
   ↓
 WebConfig (CORS 放行)
   ↓
+JwtAuthFilter（解析 token → UserContext）
+  ↓
 Controller（参数校验 + 调 Service）
+  ├── @LogAction → AccessLogAspect AOP 切面 → AccessLogMapper.insert()  ← 切片5
   ↓
 Service（业务逻辑 + @Transactional 事务）
   ↓
@@ -261,6 +323,14 @@ MySQL（生产） / H2（测试）
     → JwtUtils.parse(token) → Claims{sub, username, role}
     → UserContext.set(userId, username, role)
     → Controller.requireLogin() → UserContext.getUserId()
+    → AdminController.requireAdmin() → UserContext.isAdmin()  ← 切片4
     → 未登录 → throw BusinessException(401)
+    → 非管理员 → throw BusinessException(403)
     → request 结束 → UserContext.clear()（finally）
+
+管理权限路径（切片4）：
+  AdminController.requireAdmin()
+    → UserContext.getUserId() == null → 401
+    → UserContext.isAdmin() == false → 403
+    → 通过
 ```

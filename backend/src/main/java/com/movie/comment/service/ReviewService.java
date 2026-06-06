@@ -12,4 +12,7 @@ public interface ReviewService {
 
     /** 删除评论 */
     void deleteReview(Long reviewId, Long userId);
+
+    /** 点赞/取消点赞（toggle） */
+    void likeReview(Long reviewId, boolean liked);
 }

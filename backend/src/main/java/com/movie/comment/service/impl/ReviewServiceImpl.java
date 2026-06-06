@@ -96,6 +96,25 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
+    public void likeReview(Long reviewId, boolean liked) {
+        Review review = reviewMapper.selectById(reviewId);
+        if (review == null) {
+            throw new BusinessException(404, "评论不存在");
+        }
+
+        if (liked) {
+            review.setLikeCount(review.getLikeCount() + 1);
+        } else {
+            // 取消点赞，不低于 0
+            if (review.getLikeCount() > 0) {
+                review.setLikeCount(review.getLikeCount() - 1);
+            }
+        }
+        reviewMapper.updateById(review);
+    }
+
+    @Override
+    @Transactional
     public void deleteReview(Long reviewId, Long userId) {
         Review review = reviewMapper.selectById(reviewId);
         if (review == null) {

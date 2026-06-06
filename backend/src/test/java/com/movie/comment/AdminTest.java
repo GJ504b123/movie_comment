@@ -6,9 +6,11 @@ import com.movie.comment.dto.AddMovieRequest;
 import com.movie.comment.dto.AuditRequest;
 import com.movie.comment.dto.HideReviewRequest;
 import com.movie.comment.dto.UpdateMovieRequest;
+import com.movie.comment.entity.AccessLog;
 import com.movie.comment.entity.Movie;
 import com.movie.comment.entity.Review;
 import com.movie.comment.entity.User;
+import com.movie.comment.mapper.AccessLogMapper;
 import com.movie.comment.mapper.MovieMapper;
 import com.movie.comment.mapper.ReviewMapper;
 import com.movie.comment.mapper.UserMapper;
@@ -39,6 +41,7 @@ class AdminTest {
     @Autowired private UserMapper userMapper;
     @Autowired private MovieMapper movieMapper;
     @Autowired private ReviewMapper reviewMapper;
+    @Autowired private AccessLogMapper accessLogMapper;
     @Autowired private PasswordEncoder passwordEncoder;
 
     private static String adminToken;
@@ -459,14 +462,14 @@ class AdminTest {
 
     @Test
     @Order(21)
-    void getLogs_empty() throws Exception {
-        // 尚无日志记录（AOP 未实现），但接口应正常返回空列表
+    void getLogs_nonEmpty() throws Exception {
+        // AOP 已启用，前面测试已产生登录、发评等日志记录
         mockMvc.perform(get("/api/admin/logs")
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.list.length()").value(0))
-                .andExpect(jsonPath("$.data.total").value(0));
+                .andExpect(jsonPath("$.data.list.length()").isNumber())
+                .andExpect(jsonPath("$.data.total").isNumber());
     }
 
     @Test
@@ -506,5 +509,123 @@ class AdminTest {
         // 验证软删除：@TableLogic 自动过滤，selectById 返回 null
         Movie deleted = movieMapper.selectById(tempId);
         assertThat(deleted).isNull();
+    }
+
+    // ========================================
+    //  访问日志验证
+    // ========================================
+
+    @Test
+    @Order(24)
+    void logs_loginRecorded() {
+        // setup 中 admin 和 normaluser 各登录一次 → 至少 2 条 LOGIN
+        var list = accessLogMapper.selectList(null);
+        long loginCount = list.stream()
+                .filter(log -> "login".equals(log.getAction()))
+                .count();
+        assertThat(loginCount).isGreaterThanOrEqualTo(2);
+    }
+
+    @Test
+    @Order(25)
+    void logs_adminActionsRecorded() {
+        // 前面测试至少执行了一次 auditUser (AUDIT_USER) 和 addMovie (ADD_MOVIE)
+        var list = accessLogMapper.selectList(null);
+        long auditCount = list.stream()
+                .filter(log -> "audit_user".equals(log.getAction()))
+                .count();
+        long addMovieCount = list.stream()
+                .filter(log -> "add_movie".equals(log.getAction()))
+                .count();
+        assertThat(auditCount).isGreaterThanOrEqualTo(1);
+        assertThat(addMovieCount).isGreaterThanOrEqualTo(1);
+    }
+
+    @Test
+    @Order(26)
+    void logs_hasRequiredFields() {
+        var list = accessLogMapper.selectList(null);
+        assertThat(list).isNotEmpty();
+        for (AccessLog log : list) {
+            assertThat(log.getAction()).isNotBlank();
+            assertThat(log.getUserId()).isNotNull();
+            assertThat(log.getUsername()).isNotBlank();
+        }
+    }
+
+    // ========================================
+    //  点赞 / 取消点赞
+    // ========================================
+
+    @Test
+    @Order(27)
+    void likeReview_increment() throws Exception {
+        // 初始 likeCount = 0
+        Review before = reviewMapper.selectById(reviewId);
+        int initial = before.getLikeCount();
+
+        mockMvc.perform(post("/api/reviews/" + reviewId + "/like")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"liked\":true}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+
+        Review after = reviewMapper.selectById(reviewId);
+        assertThat(after.getLikeCount()).isEqualTo(initial + 1);
+    }
+
+    @Test
+    @Order(28)
+    void likeReview_decrement() throws Exception {
+        // 上一步已 +1，现在取消 → 归零
+        mockMvc.perform(post("/api/reviews/" + reviewId + "/like")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"liked\":false}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+
+        Review after = reviewMapper.selectById(reviewId);
+        assertThat(after.getLikeCount()).isEqualTo(0);
+    }
+
+    @Test
+    @Order(29)
+    void likeReview_floorAtZero() throws Exception {
+        // likeCount 已经是 0，再取消不应变负
+        mockMvc.perform(post("/api/reviews/" + reviewId + "/like")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"liked\":false}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+
+        Review after = reviewMapper.selectById(reviewId);
+        assertThat(after.getLikeCount()).isEqualTo(0);
+    }
+
+    @Test
+    @Order(30)
+    void likeReview_noToken() throws Exception {
+        mockMvc.perform(post("/api/reviews/" + reviewId + "/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"liked\":true}"))
+                .andExpect(jsonPath("$.code").value(401));
+    }
+
+    // ========================================
+    //  排行榜 sortBy=reviewCount
+    // ========================================
+
+    @Test
+    @Order(31)
+    void rankings_sortByReviewCount() throws Exception {
+        mockMvc.perform(get("/api/rankings")
+                        .param("sortBy", "reviewCount")
+                        .param("limit", "100"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data").isArray());
     }
 }

@@ -1,5 +1,7 @@
 package com.movie.comment.controller;
 
+import com.movie.comment.aspect.LogAction;
+import com.movie.comment.common.ActionType;
 import com.movie.comment.common.BusinessException;
 import com.movie.comment.common.PageResult;
 import com.movie.comment.common.Result;
@@ -54,6 +56,7 @@ public class AdminController {
             @ApiResponse(responseCode = "400", description = "用户非待审核状态或 action 非法"),
             @ApiResponse(responseCode = "404", description = "用户不存在")
     })
+    @LogAction(value = ActionType.AUDIT_USER, targetParamName = "userId")
     @PutMapping("/users/{userId}/audit")
     public Result<Void> auditUser(
             @Parameter(description = "用户 ID") @PathVariable Long userId,
@@ -76,6 +79,7 @@ public class AdminController {
             @ApiResponse(responseCode = "401", description = "未登录"),
             @ApiResponse(responseCode = "403", description = "非管理员")
     })
+    @LogAction(ActionType.ADD_MOVIE)
     @PostMapping("/movies")
     public Result<Map<String, Long>> addMovie(@RequestBody AddMovieRequest req) {
         requireAdmin();
@@ -92,6 +96,7 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "更新成功"),
             @ApiResponse(responseCode = "404", description = "影片不存在")
     })
+    @LogAction(value = ActionType.EDIT_MOVIE, targetParamName = "movieId")
     @PutMapping("/movies/{movieId}")
     public Result<Void> updateMovie(
             @Parameter(description = "影片 ID") @PathVariable Long movieId,
@@ -110,6 +115,7 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "删除成功"),
             @ApiResponse(responseCode = "404", description = "影片不存在")
     })
+    @LogAction(value = ActionType.DELETE_MOVIE, targetParamName = "movieId")
     @DeleteMapping("/movies/{movieId}")
     public Result<Void> deleteMovie(
             @Parameter(description = "影片 ID") @PathVariable Long movieId) {
@@ -144,6 +150,7 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "操作成功"),
             @ApiResponse(responseCode = "404", description = "评论不存在")
     })
+    @LogAction(value = ActionType.HIDE_REVIEW, targetParamName = "reviewId")
     @PutMapping("/reviews/{reviewId}/visibility")
     public Result<Void> setReviewVisibility(
             @Parameter(description = "评论 ID") @PathVariable Long reviewId,
