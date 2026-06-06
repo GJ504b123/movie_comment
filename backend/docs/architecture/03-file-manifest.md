@@ -194,12 +194,42 @@ user ──1:N──▶ review ◀──N:1── movie
 | `AuthController.java` | `POST /api/auth/register`、`POST /api/auth/login` | 公开 |
 | `UserController.java` | `GET /api/user/profile`、`PUT /api/user/profile` | 需要 token |
 
+### dto/ —— 请求/响应对象（6 个文件）—— 切片3新增
+
+| 文件 | 职责 |
+|------|------|
+| `MovieVO.java` | 影片列表项（id/title/coverUrl/averageScore/reviewCount/releaseDate） |
+| `MovieDetailVO.java` | 影片详情（所有字段），`from(Movie)` 转换 |
+| `ReviewVO.java` | 评论展示（含 username + canEdit），`from(Review, username, canEdit)` |
+| `CreateReviewRequest.java` | 发表评论：rating `@Min(1) @Max(10) @NotNull` + comment |
+| `UpdateReviewRequest.java` | 修改评论：rating 和 comment 均可选 |
+| `RankingItemVO.java` | 排行榜项（rank/movieId/title/coverUrl/averageScore/reviewCount） |
+
+### service/ —— 业务层（4 个文件）—— 切片3新增
+
+| 文件 | 职责 |
+|------|------|
+| `MovieService.java` | 接口：listMovies / getMovieDetail |
+| `impl/MovieServiceImpl.java` | 模糊搜索（title/director/cast LIKE）+ 手动分页（selectCount + LIMIT OFFSET）；详情含评论分页 + 批量查用户名 + canEdit |
+| `ReviewService.java` | 接口：createReview / updateReview / deleteReview |
+| `impl/ReviewServiceImpl.java` | 唯一约束校验→409、权限校验→403；增/改/删后同事务 `refreshMovieScore()` 更新影片评分冗余 |
+
+### controller/ —— REST 入口（3 个文件）—— 切片3新增
+
+| 文件 | 接口 | 认证 |
+|------|------|------|
+| `MovieController.java` | `GET /api/movies`（keyword/page/size/sort）、`GET /api/movies/{id}`（reviewPage/reviewSize） | 可选 |
+| `ReviewController.java` | `POST /api/movies/{id}/reviews`、`PUT /api/reviews/{id}`、`DELETE /api/reviews/{id}` | 需要 token |
+| `RankingController.java` | `GET /api/rankings`（limit/timeRange） | 可选 |
+
 ## 测试层（src/test/）
 
 | 文件 | 职责 |
 |------|------|
 | `resources/application.yml` | 测试用 H2 内存库配置。URL 加 `MODE=MySQL;NON_KEYWORDS=USER` 兼容 MySQL 语法、避免 `user` 保留字冲突 |
 | `java/.../InfrastructureTest.java` | 3 个测试：`contextLoads`（Spring 启动）、`userCrud`（BCrypt + 持久化）、`movieCrud`（软删除过滤） |
+| `java/.../AuthTest.java` | 5 个测试：注册/登录/重复注册/无token/错误密码 |
+| `java/.../MovieReviewTest.java` | 12 个测试：影片列表/搜索/详情/发评/重复评/无认证评/改评/删评/排行榜 |
 
 ---
 
