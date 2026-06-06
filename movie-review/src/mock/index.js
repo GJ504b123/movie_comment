@@ -246,21 +246,7 @@ export default [
     }
   },
   
-  // 获取影片详情
-  {
-    url: '/api/movies/:id',
-    method: 'get',
-    response: (req) => {
-      const id = req.params?.id || req.url?.split('/')[4]
-      const movie = movieDetails[id]
-      if (!movie) {
-        return { code: 404, message: '影片不存在', data: null }
-      }
-      return { code: 200, message: '成功', data: movie }
-    }
-  },
-  
-  // 获取排行榜
+  // 获取排行榜（必须在 /api/movies/:id 之前，否则 ranking 会被当作 id 匹配）
   {
     url: '/api/movies/ranking',
     method: 'get',
@@ -269,6 +255,20 @@ export default [
       message: '成功',
       data: rankings
     })
+  },
+
+  // 获取影片详情
+  {
+    url: '/api/movies/:id',
+    method: 'get',
+    response: (req) => {
+      const id = req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).pop()
+      const movie = movieDetails[id]
+      if (!movie) {
+        return { code: 404, message: '影片不存在', data: null }
+      }
+      return { code: 200, message: '成功', data: movie }
+    }
   },
   
   // 添加影片
@@ -335,7 +335,7 @@ export default [
     url: '/api/movies/:id',
     method: 'put',
     response: (req) => {
-      const id = parseInt(req.params?.id || req.url?.split('/')[4])
+      const id = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).pop())
       const body = req.body || {}
       
       // 更新影片列表
@@ -387,7 +387,7 @@ export default [
     url: '/api/movies/:id',
     method: 'delete',
     response: (req) => {
-      const movieId = parseInt(req.params?.id || req.url?.split('/')[4])
+      const movieId = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).pop())
       
       // 删除影片列表中的影片
       const movieIndex = movieList.findIndex(m => m.id === movieId)
@@ -482,7 +482,7 @@ export default [
     url: '/api/admin/users/:id/approve',
     method: 'put',
     response: (req) => {
-      const userId = parseInt(req.params?.id || req.url?.split('/')[4])
+      const userId = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).slice(-2)[0])
       const user = userDatabase[userId.toString()]
       if (!user) {
         return { code: 404, message: '用户不存在', data: null }
@@ -499,7 +499,7 @@ export default [
     url: '/api/admin/users/:id/reject',
     method: 'put',
     response: (req) => {
-      const userId = parseInt(req.params?.id || req.url?.split('/')[4])
+      const userId = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).slice(-2)[0])
       const user = userDatabase[userId.toString()]
       if (!user) {
         return { code: 404, message: '用户不存在', data: null }
@@ -560,7 +560,7 @@ export default [
     url: '/api/admin/reviews/:id/hide',
     method: 'put',
     response: (req) => {
-      const id = parseInt(req.params?.id || req.url?.split('/')[5])
+      const id = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).slice(-2)[0])
       const review = allReviews.find(r => r.id === id)
       const body = req.body || {}
       if (review) review.hidden = body.hidden
