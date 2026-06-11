@@ -1,20 +1,18 @@
 <template>
   <div class="space-y-6">
-    <!-- 页面标题 -->
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-2xl font-black text-gray-800">🎥 影片管理控制台</h2>
-        <p class="text-xs text-gray-500 mt-1">管理全站影片数据，上架新电影或下架违规内容</p>
+        <p class="text-xs text-gray-500 mt-1">管理全站影片数据，上架新电影或下架违规内容（支持逻辑软删除留痕）</p>
       </div>
       <button
-        @click="showAddModal = true"
-        class="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-all shadow-md shadow-purple-100"
+        @click="openAddModal"
+        class="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-all shadow-md shadow-purple-100 cursor-pointer"
       >
         <span>+</span> 上架新电影
       </button>
     </div>
 
-    <!-- 搜索栏 -->
     <div class="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm flex gap-4">
       <a-input
         v-model:value="searchKeyword"
@@ -23,13 +21,12 @@
         allow-clear
         class="flex-1"
       />
-      <a-select v-model:value="sortBy" placeholder="排序方式">
+      <a-select v-model:value="sortBy" placeholder="排序方式" style="width: 150px">
         <a-select-option value="rating">按评分</a-select-option>
         <a-select-option value="releaseDate">按上映时间</a-select-option>
       </a-select>
     </div>
 
-    <!-- 影片列表 -->
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
       <div class="border-b border-gray-100 px-6 py-3 bg-gray-50">
         <div class="grid grid-cols-12 gap-4 text-xs font-bold text-gray-500">
@@ -38,8 +35,8 @@
           <div class="col-span-3">标题</div>
           <div class="col-span-2">导演</div>
           <div class="col-span-2">评分 / 评论数</div>
-          <div class="col-span-2">上映日期</div>
-          <div class="col-span-1 text-center">操作</div>
+          <div class="col-span-1">数据状态</div>
+          <div class="col-span-2 text-center">操作</div>
         </div>
       </div>
 
@@ -57,83 +54,92 @@
         <div
           v-for="movie in movies"
           :key="movie.id"
+          :class="movie.deleted ? 'bg-gray-100/70' : ''"
           class="border-b border-gray-50 px-6 py-4 hover:bg-purple-50/30 transition-colors"
         >
           <div class="grid grid-cols-12 gap-4 items-center">
             <div class="col-span-1 text-sm font-mono text-gray-600">#{{ movie.id }}</div>
             <div class="col-span-1">
-              <img :src="movie.coverUrl" class="w-10 h-14 object-cover rounded-lg" />
+              <img :src="movie.coverUrl" class="w-10 h-14 object-cover rounded-lg shadow-sm" :class="movie.deleted ? 'grayscale opacity-60' : ''" />
             </div>
             <div class="col-span-3">
-              <p class="font-bold text-gray-800 text-sm">{{ movie.title }}</p>
+              <p class="font-bold text-sm" :class="movie.deleted ? 'text-gray-400 line-through' : 'text-gray-800'">{{ movie.title }}</p>
               <p class="text-xs text-gray-400 line-clamp-1">{{ movie.cast }}</p>
             </div>
             <div class="col-span-2 text-sm text-gray-600 truncate">{{ movie.director }}</div>
             <div class="col-span-2 text-sm">
-              <span class="text-yellow-500 font-bold">★ {{ movie.averageScore }}</span>
-              <span class="text-gray-400 text-xs ml-2">({{ movie.reviewCount }}评)</span>
+              <span class="text-yellow-500 font-bold">★ {{ movie.averageScore?.toFixed(1) || '0.0' }}</span>
+              <span class="text-gray-400 text-xs ml-2">({{ movie.reviewCount || 0 }}评)</span>
             </div>
-            <div class="col-span-2 text-xs text-gray-400">{{ movie.releaseDate }}</div>
-            <div class="col-span-1 flex items-center justify-center gap-1">
+            
+            <div class="col-span-1">
+              <span
+                :class="movie.deleted ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'"
+                class="px-2.5 py-0.5 rounded-full text-xs font-black"
+              >
+                {{ movie.deleted ? '已下架' : '正常' }}
+              </span>
+            </div>
+
+            <div class="col-span-2 flex items-center justify-center gap-2">
               <button
                 @click="handleEdit(movie)"
-                class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors"
+                class="px-2.5 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 transition-colors cursor-pointer"
               >
-                ✏️
+                ✏️ 编辑
               </button>
               <button
-                @click="handleDelete(movie.id)"
-                class="px-2 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-colors"
+                v-if="!movie.deleted"
+                @click="handleDelete(movie)"
+                class="px-2.5 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition-colors cursor-pointer"
               >
-                🗑️
+                🗑️ 下架
               </button>
+              <span v-else class="text-xs text-gray-400 font-medium">留痕留存中</span>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- 分页 -->
-      <div v-if="!loading && movies.length > 0" class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-        <p class="text-xs text-gray-400">共 {{ total }} 部影片</p>
-        <a-pagination
-          :current="page"
-          :total="total"
-          :page-size="size"
-          show-size-changer
-          show-quick-jumper
-          @change="handlePageChange"
-        />
-      </div>
     </div>
 
-    <!-- 添加/编辑弹窗 -->
+    <div v-if="!loading && movies.length > 0" class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white rounded-2xl border border-gray-200 shadow-sm">
+      <p class="text-xs text-gray-400">共 {{ total }} 部影片</p>
+      <a-pagination
+        :current="page"
+        :total="total"
+        :page-size="size"
+        @change="handlePageChange"
+      />
+    </div>
+
     <a-modal
       v-model:open="showAddModal"
       :title="editingMovie ? '修改影片信息' : '上架新电影'"
       :footer="null"
+      @cancel="closeModal"
     >
-      <a-form :model="formData" layout="vertical">
-        <a-form-item label="影片标题" name="title" :rules="[{ required: true, message: '请输入影片标题' }]">
+      <a-form :model="formData" layout="vertical" @finish="handleSubmit">
+        <a-form-item label="影片标题" :rules="[{ required: true, message: '请输入影片标题' }]">
           <a-input v-model:value="formData.title" placeholder="如：肖申克的救赎" />
         </a-form-item>
-        <a-form-item label="导演" name="director" :rules="[{ required: true, message: '请输入导演' }]">
+        <a-form-item label="导演" :rules="[{ required: true, message: '请输入导演' }]">
           <a-input v-model:value="formData.director" placeholder="如：弗兰克·德拉邦特" />
         </a-form-item>
-        <a-form-item label="主演" name="cast">
+        <a-form-item label="主演">
           <a-input v-model:value="formData.cast" placeholder="如：蒂姆·罗宾斯, 摩根·弗里曼" />
         </a-form-item>
-        <a-form-item label="上映日期" name="releaseDate" :rules="[{ required: true, message: '请选择上映日期' }]">
-          <a-date-picker v-model:value="formData.releaseDate" style="width: 100%" />
+        <a-form-item label="上映日期" :rules="[{ required: true, message: '请选择上映日期' }]">
+          <a-input v-model:value="formData.releaseDate" placeholder="格式如：1994-09-23" />
         </a-form-item>
-        <a-form-item label="封面URL" name="coverUrl" :rules="[{ required: true, message: '请输入封面URL' }]">
+        <a-form-item label="封面URL" :rules="[{ required: true, message: '请输入封面URL' }]">
           <a-input v-model:value="formData.coverUrl" placeholder="https://..." />
         </a-form-item>
-        <a-form-item label="剧情简介" name="description">
+        <a-form-item label="剧情简介">
           <a-textarea v-model:value="formData.description" :rows="3" placeholder="请输入影片简介..." />
         </a-form-item>
         <div class="flex justify-end gap-3 mt-6">
-          <a-button @click="showAddModal = false">取消</a-button>
-          <a-button type="primary" @click="handleSubmit">
+          <a-button @click="closeModal">取消</a-button>
+          <a-button type="primary" html-type="submit" class="!bg-purple-600 hover:!bg-purple-700">
             {{ editingMovie ? '保存修改' : '确认上架' }}
           </a-button>
         </div>
@@ -162,24 +168,24 @@ const formData = ref({
   title: '',
   director: '',
   cast: '',
-  releaseDate: null,
+  releaseDate: '',
   coverUrl: '',
   description: ''
 })
 
+// 🚀 覆盖全面拉取接口
 const fetchMovies = async () => {
   loading.value = true
   try {
-    const params = { 
-      page: page.value, 
-      size: size.value,
-      keyword: searchKeyword.value,
-      sortBy: sortBy.value
-    }
-    const res = await request.get('/movies', { params })
+    // 💡 后台大楼特殊福利：我们直接调用包含全部历史货架的 Mock 接口
+    const res = await request.get('/movies', {
+      params: { page: page.value, size: size.value, keyword: searchKeyword.value, sortBy: sortBy.value }
+    })
     if (res.code === 200) {
-      movies.value = res.data.list
-      total.value = res.data.total
+      // 💡 大厂级兼容：由于前端后台要调试“已下架”留痕状态，我们这里直接接收全量列表
+      const responseData = res.data || res
+      movies.value = responseData.list || []
+      total.value = responseData.total || 0
     }
   } catch (error) {
     console.error('获取影片列表失败:', error)
@@ -188,74 +194,84 @@ const fetchMovies = async () => {
   }
 }
 
-const handleEdit = (movie) => {
-  editingMovie.value = movie
-  formData.value.title = movie.title
-  formData.value.director = movie.director
-  formData.value.cast = movie.cast
-  formData.value.releaseDate = new Date(movie.releaseDate)
-  formData.value.coverUrl = movie.coverUrl
-  formData.value.description = movie.description || ''
+const openAddModal = () => {
+  editingMovie.value = null
+  formData.value = { title: '', director: '', cast: '', releaseDate: '2026-06-09', coverUrl: '', description: '' }
   showAddModal.value = true
 }
 
-const handleDelete = async (movieId) => {
+const handleEdit = (movie) => {
+  editingMovie.value = movie
+  formData.value = {
+    title: movie.title,
+    director: movie.director,
+    cast: movie.cast,
+    releaseDate: movie.releaseDate,
+    coverUrl: movie.coverUrl,
+    description: movie.description || ''
+  }
+  showAddModal.value = true
+}
+
+// 🚀 【严格对齐合同 2.5】：逻辑软下架路口
+const handleDelete = async (movie) => {
   try {
-    const res = await request.delete(`/movies/${movieId}`)
+    console.log(`🚀 后台正在向管理员专属路口 DELETE /api/admin/movies/${movie.id} 发起弹药...`)
+    const res = await request.delete(`/admin/movies/${movie.id}`)
     if (res.code === 200) {
-      message.success(`影片 #${movieId} 已下架`)
-      movies.value = movies.value.filter(m => m.id !== movieId)
-      total.value--
+      message.success(`影片《${movie.title}》已成功下架留痕`)
+      // 🔄 重新拉取大盘，这时候它会完美变成灰色的“已下架”标签！
+      fetchMovies()
     }
   } catch (error) {
-    console.error('删除失败:', error)
+    console.error('下架失败:', error)
   }
 }
 
+// 🚀 【严格对齐合同 2.3 & 2.4】：添加与修改
 const handleSubmit = async () => {
   if (!formData.value.title || !formData.value.director || !formData.value.coverUrl) {
     message.error('请填写必填字段')
     return
   }
   
-  const data = {
+  const payload = {
     title: formData.value.title,
     director: formData.value.director,
     cast: formData.value.cast,
-    releaseDate: formData.value.releaseDate ? formData.value.releaseDate.toISOString().split('T')[0] : null,
+    releaseDate: formData.value.releaseDate,
     coverUrl: formData.value.coverUrl,
     description: formData.value.description
   }
   
   try {
     if (editingMovie.value) {
-      const res = await request.put(`/movies/${editingMovie.value.id}`, data)
+      // 🎯 【合同 2.4】管理员修改影片
+      console.log(`🚀 向合同路口 PUT /api/admin/movies/${editingMovie.value.id} 提交修改`)
+      const res = await request.put(`/admin/movies/${editingMovie.value.id}`, payload)
       if (res.code === 200) {
-        const index = movies.value.findIndex(m => m.id === editingMovie.value.id)
-        if (index !== -1) {
-          movies.value[index] = { ...movies.value[index], ...data }
-        }
-        message.success('影片信息已更新')
+        message.success('影片信息已成功更新')
+        fetchMovies()
       }
     } else {
-      const res = await request.post('/movies', data)
-      if (res.code === 201) {
-        message.success('新影片上架成功')
-        total.value++
+      // 🎯 【合同 2.3】管理员添加上架影片
+      console.log('🚀 向合同路口 POST /api/admin/movies 发起全网新片上架发布...')
+      const res = await request.post('/admin/movies', payload)
+      if (res.code === 201 || res.code === 200) {
+        message.success('新影片已成功发布上架！')
+        fetchMovies()
       }
     }
   } catch (error) {
     console.error('操作失败:', error)
+  } finally {
+    closeModal()
   }
-  
+}
+
+const closeModal = () => {
   showAddModal.value = false
   editingMovie.value = null
-  formData.value.title = ''
-  formData.value.director = ''
-  formData.value.cast = ''
-  formData.value.releaseDate = null
-  formData.value.coverUrl = ''
-  formData.value.description = ''
 }
 
 const handlePageChange = (pageNum) => {

@@ -119,19 +119,33 @@
                   </div>
                 </div>
 
-                <span
-                  v-if="reply.userId === userStore.userInfo?.id"
-                  class="absolute top-4 right-4 text-purple-600 text-xs bg-purple-100 px-2 py-0.5 rounded-md font-bold"
-                >
-                  我的评论
-                </span>
+<div v-if="reply.userId === userStore.userInfo?.id" class="absolute top-4 right-4 flex items-center gap-2">
+  <span class="text-purple-600 text-xs bg-purple-100 px-2 py-0.5 rounded-md font-bold">
+    我的评论
+  </span>
+  <button 
+    @click="handleDeleteReview(reply.id)" 
+    class="text-xs text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded-md font-bold transition-colors cursor-pointer"
+  >
+    🗑️ 删除
+  </button>
+</div>
               </div>
             </div>
 
-            <div class="mt-6 flex items-center justify-between text-xs text-gray-400 border-t border-gray-100 pt-4">
-              <p>每页显示 {{ reviews.size }} 条</p>
-              <p>当前第 {{ reviews.page }} / {{ reviews.totalPages || 1 }} 页</p>
-            </div>
+<div v-if="reviews.total > 0" class="mt-6 flex items-center justify-between text-xs text-gray-400 border-t border-gray-100 pt-4">
+  <div class="flex gap-4">
+    <p>共 {{ reviews.total }} 条评论</p>
+    <p>每页显示 {{ reviews.size }} 条</p>
+  </div>
+  <a-pagination
+    :current="reviews.page"
+    :total="reviews.total"
+    :page-size="reviews.size"
+    simple
+    @change="handleReviewPageChange"
+  />
+</div>
 
           </div>
 
@@ -158,18 +172,35 @@ const isLoading = ref(true)
 const movie = ref(null)
 const reviews = ref({ list: [], total: 0, page: 1, size: 5, totalPages: 1 })
 
-const myRating = ref(4)
+// 💡 记录当前前台影评正停留在第几页
+const currentReviewPage = ref(1)
+
+const myRating = ref(4) 
 const myComment = ref('')
 const submitting = ref(false)
 
+// ----------------------------------------------------
+// 🚀 【合同 3.2】获取影片详情（带动态 reviewPage 传参版）
+// ----------------------------------------------------
 const fetchDetail = async () => {
   isLoading.value = true
-  const currentId = route.params.id
+  const currentId = route.params.id || '201'
   try {
-    const res = await request.get(`/movies/${currentId}`)
-    if (res.code === 200 && res.data) {
-      movie.value = res.data
-      reviews.value = res.data.reviews || { list: [], total: 0, page: 1, size: 5, totalPages: 1 }
+    console.log(`🚀 详情页正在向合同路口拉取 /api/movies/${currentId}?reviewPage=${currentReviewPage.value}`)
+    
+    // 🎯 严格对齐合同 3.2 的 Query 参数：reviewPage 和 reviewSize
+    const res = await request.get(`/movies/${currentId}`, {
+      params: {
+        reviewPage: currentReviewPage.value,
+        reviewSize: 5
+      }
+    })
+    console.log('🎁 详情页成功收到大厂标准大礼盒:', res)
+
+    if (res && res.code === 200) {
+      const container = res.data || res
+      movie.value = container.movie || null
+      reviews.value = container.reviews || { list: [], total: 0, page: 1, size: 5, totalPages: 1 }
     } else {
       movie.value = null
     }
@@ -181,41 +212,70 @@ const fetchDetail = async () => {
   }
 }
 
+// 🎯 监听前台小飞毯点击：当管理员/用户点击下一页时触发
+const handleReviewPageChange = (pageNum) => {
+  console.log(`🚲 前台评论正准备翻向第 ${pageNum} 页...`)
+  currentReviewPage.value = pageNum // 更改页码
+  fetchDetail() // 🔄 重新拉取那一页的切片数据
+}
+
+// ----------------------------------------------------
+// 🚀 【合同 3.3】发表评论/评分
+// ----------------------------------------------------
 const submitReview = async () => {
   if (!myComment.value.trim()) {
     message.warning('请输入评论内容')
     return
   }
   submitting.value = true
+  const currentId = route.params.id || '201'
+
   try {
     const payload = {
-      movieId: Number(route.params.id),
-      userId: userStore.userInfo?.id,
-      username: userStore.userInfo?.username,
-      rating: myRating.value * 2,
-      comment: myComment.value.trim(),
+      rating: Math.round(myRating.value * 2),
+      comment: myComment.value.trim()
     }
-    const res = await request.post('/reviews', payload)
-    if (res.code === 201) {
+    
+    const res = await request.post(`/movies/${currentId}/reviews`, payload)
+
+    if (res.code === 201 || res.code === 200) {
       message.success('评论发表成功')
-      // 本地插入，提供即时反馈
-      reviews.value.list.unshift({
-        id: res.data.id,
-        userId: payload.userId,
-        username: payload.username,
-        rating: payload.rating,
-        comment: payload.comment,
-        likeCount: 0,
-        createTime: res.data.createTime,
-      })
-      reviews.value.total += 1
       myComment.value = ''
       myRating.value = 4
+      
+      // 发表成功后，强行把视线拉回第一页，让最新鲜的影评露出来！
+      currentReviewPage.value = 1
+      fetchDetail()
+    } else if (res.code === 409) {
+      message.error('您已经评论过这部电影，不能重复评论哦')
+    } else {
+      message.error(res.message || '评论失败')
     }
   } catch (error) {
     console.error('评论失败:', error)
+    if (error.response?.status === 409 || error.data?.code === 409) {
+      message.error('您已经评论过这部电影，不能重复评论哦')
+    }
   } finally {
     submitting.value = false
+  }
+}
+// 🚀 【严格对齐合同 3.5】：删除自己的评论
+const handleDeleteReview = async (reviewId) => {
+  try {
+    console.log(`🚀 准备向合同路口 DELETE /api/reviews/${reviewId} 发射导弹，销毁该评论...`)
+    const res = await request.delete(`/reviews/${reviewId}`)
+
+    if (res.code === 200) {
+      message.success('影评已成功撤销删除！')
+      
+      // 🔄 本地实时重冲刷：重新拉取详情，电影的平均分、总条数、翻页数据会一秒全部全自动重组！
+      fetchDetail()
+    } else {
+      message.error(res.message || '删除失败')
+    }
+  } catch (error) {
+    console.error('💥 删除评论失败:', error)
   }
 }
 

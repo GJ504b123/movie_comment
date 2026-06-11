@@ -1,596 +1,507 @@
 /**
- * ==========================================
- * 🎬 全栈影评系统 - Mock API 拦截规则配置
- * ==========================================
+ * ========================================================
+ * 🎬 MovieReview 全栈影评系统 - 严格对齐后端 API 合同的 Mock 拦截总闸
+ * ========================================================
  */
+import Mock from 'mockjs'
 
-// 内存中的用户数据库
+// 🏛️ 1. 动态物理基础内存数据库（赋予系统完美的持久化和互动记忆）
 const userDatabase = {
-  '101': { id: 101, username: 'wenwen', password: '123456', email: 'wenwen@example.com', role: 'admin', status: 'approved', createTime: '2024-01-15T10:30:00Z' },
-  '102': { id: 102, username: 'xiaoming', password: '123456', email: 'xiaoming@example.com', role: 'user', status: 'approved', createTime: '2024-02-20T14:20:00Z' },
-  '103': { id: 103, username: 'testuser', password: '123456', email: 'test@example.com', role: 'user', status: 'pending', createTime: '2024-03-10T09:15:00Z' },
-  '105': { id: 105, username: 'newuser1', password: '123456', email: 'newuser1@example.com', role: 'user', status: 'pending', createTime: '2024-03-14T10:00:00Z' },
+  '101': { id: 101, username: 'wenwen', password: '123456', email: 'wenwen@example.com', role: 'admin', status: 'approved', createTime: '2026-01-15T10:30:00Z', lastLoginTime: '2026-06-07T14:00:00Z' },
+  '102': { id: 102, username: 'xiaoming', password: '123456', email: 'xiaoming@example.com', role: 'user', status: 'approved', createTime: '2026-02-20T14:20:00Z', lastLoginTime: '2026-06-07T15:30:00Z' },
+  '103': { id: 103, username: 'filmfan', password: '123456', email: 'fan@example.com', role: 'user', status: 'approved', createTime: '2025-01-01T10:00:00Z', lastLoginTime: '2025-03-20T15:30:00Z' },
 }
 
-let nextUserId = 106
-
-// 影片列表数据
-const movieList = [
-  { id: 201, title: '肖申克的救赎', averageScore: 9.2, coverUrl: 'https://images.pexels.com/photos/27219316/pexels-photo-27219316.jpeg', reviewCount: 128, releaseDate: '1994-09-23' },
-  { id: 202, title: '霸王别姬', averageScore: 9.6, coverUrl: 'https://images.pexels.com/photos/35195183/pexels-photo-35195183.jpeg', reviewCount: 95, releaseDate: '1993-01-01' },
-  { id: 203, title: '星际穿越', averageScore: 9.4, coverUrl: 'https://images.pexels.com/photos/15209918/pexels-photo-15209918.png', reviewCount: 44, releaseDate: '2014-11-07' },
+// ⏳ 管理员专用：待审核用户列表底子 (对应合同 2.1)
+const pendingUsersList = [
+  { id: 102, username: 'newbie', email: 'newbie@example.com', createTime: '2025-03-19T08:00:00Z' }
 ]
 
-// 影片详情数据
-const movieDetails = {
-  '201': {
-    id: 201, title: '肖申克的救赎', director: '弗兰克·德拉邦特', cast: '蒂姆·罗宾斯, 摩根·弗里曼',
-    averageScore: 9.2, coverUrl: 'https://images.pexels.com/photos/27219316/pexels-photo-27219316.jpeg',
-    releaseDate: '1994-09-23', description: '一场冤狱带来的希望与救赎，一个关于自由与坚持的感人故事。',
-    reviewCount: 128, reviews: {
-      list: [
-        { id: 301, userId: 102, username: 'xiaoming', rating: 9, comment: '经典中的经典，每个镜头都值得回味。', likeCount: 42, createTime: '2024-03-15T14:30:00Z', canEdit: false },
-        { id: 302, userId: 101, username: 'wenwen', rating: 10, comment: '看过最好的电影，没有之一。', likeCount: 38, createTime: '2024-03-10T10:20:00Z', canEdit: false },
-      ],
-      total: 2, page: 1, size: 5, totalPages: 1
-    }
-  },
-  '202': {
-    id: 202, title: '霸王别姬', director: '陈凯歌', cast: '张国荣, 张丰毅, 巩俐',
-    averageScore: 9.6, coverUrl: 'https://images.pexels.com/photos/35195183/pexels-photo-35195183.jpeg',
-    releaseDate: '1993-01-01', description: '不疯魔不成活，程蝶衣与段小楼的传奇人生。',
-    reviewCount: 95, reviews: {
-      list: [
-        { id: 303, userId: 102, username: 'xiaoming', rating: 10, comment: '史诗级的作品，张国荣的表演无可挑剔。', likeCount: 56, createTime: '2024-03-12T16:45:00Z', canEdit: false },
-      ],
-      total: 1, page: 1, size: 5, totalPages: 1
-    }
-  },
-  '203': {
-    id: 203, title: '星际穿越', director: '克里斯托弗·诺兰', cast: '马修·麦康纳, 安妮·海瑟薇',
-    averageScore: 9.4, coverUrl: 'https://images.pexels.com/photos/15209918/pexels-photo-15209918.png',
-    releaseDate: '2014-11-07', description: '穿越时空的爱与亲情，探索宇宙的终极奥秘。',
-    reviewCount: 44, reviews: {
-      list: [
-        { id: 304, userId: 101, username: 'wenwen', rating: 9, comment: '科学与情感的完美结合。', likeCount: 28, createTime: '2024-03-08T11:10:00Z', canEdit: false },
-      ],
-      total: 1, page: 1, size: 5, totalPages: 1
+// 🎥 基础电影列表数据（对应合同 3.1、3.6）
+// 🎥 基础电影列表数据（豪华扩容 6 部大片版！加入 deleted 逻辑软删除标记）
+let movieDatabase = [
+  { id: 201, title: '肖申克的救赎', coverUrl: 'https://images.pexels.com/photos/27219316/pexels-photo-27219316.jpeg', averageScore: 9.2, reviewCount: 128, releaseDate: '1994-09-23', director: '弗兰克·德拉邦特', cast: '蒂姆·罗宾斯, 摩根·弗里曼', description: '这场谋杀使银行家安迪蒙冤入狱，在长达20年的牢狱生涯中，他用信念和智慧为自己完成了救赎，重获自由。', deleted: false },
+  { id: 202, title: '霸王别姬', coverUrl: 'https://images.pexels.com/photos/35195183/pexels-photo-35195183.jpeg', averageScore: 9.6, reviewCount: 95, releaseDate: '1993-01-01', director: '陈凯歌', cast: '张国荣, 张丰毅, 巩俐', description: '影片通过两位京剧伶人程蝶衣与段小楼风雨坎坷的坎坷命运，展现了中国半个多世纪的风云变幻以及对传统文化、人性的深度反思。', deleted: false },
+  { id: 203, title: '星际穿越', coverUrl: 'https://images.pexels.com/photos/15209918/pexels-photo-15209918.png', averageScore: 9.4, reviewCount: 44, releaseDate: '2014-11-07', director: '克里斯托弗·诺兰', cast: '马修·麦康纳, 安妮·海瑟薇', description: '近未来地球遭遇严重的枯萎病，前飞行员库珀不得不告别年幼的女儿，毅然穿越虫洞深入未知的宇宙，为濒临灭绝的人类寻找新的家园。', deleted: false },
+  // 🚀 汶汶专属调试新弹药：
+  { id: 204, title: '千与千寻', coverUrl: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg', averageScore: 9.3, reviewCount: 60, releaseDate: '2001-07-20', director: '宫崎骏', cast: '柊瑠美, 入野自由', description: '10岁的少女千千寻与父母一同驱车前往新家，途中迷路误闯入一个人类不应该进入的、属于神灵的奇幻小镇...', deleted: false },
+  { id: 205, title: '盗梦空间', coverUrl: 'https://images.pexels.com/photos/2884867/pexels-photo-2884867.jpeg', averageScore: 9.2, reviewCount: 80, releaseDate: '2010-09-01', director: '克里斯托弗·诺兰', cast: '莱昂纳多·迪卡普里奥', description: '多姆·柯布是一名极其擅长潜入人类梦境、窃取核心机密的顶级商业间谍。这一次，他需要挑战一个不可能的任务：不是窃取，而是植入思想。', deleted: false },
+  { id: 206, title: '泰坦尼克号', coverUrl: 'https://images.pexels.com/photos/45853/the-sydney-opera-house-opera-house-sydney-australia-45853.jpeg', averageScore: 9.4, reviewCount: 110, releaseDate: '1997-12-19', director: '詹姆斯·卡梅隆', cast: '莱昂纳多·迪卡普里奥, 凯特·温丝莱特', description: '处于不同阶层的穷小子杰克与贵族女露丝在泰坦尼克号豪华巨轮上相识相恋。然而，一场突如其来的冰山撞击，让这场凄美的爱情成为了永恒。', deleted: false }
+]
+
+// 💬 电影绑定的独立评论列表（对应合同 3.2、2.6）
+// 💬 电影绑定的独立评论列表（疯狂注水豪华版：完美撑爆分页，触发翻页特效！）
+let reviewDatabase = [
+  { id: 301, movieId: 201, movieTitle: '肖申克的救赎', userId: 103, username: 'filmfan', rating: 10, comment: '永远的神作，信念是关不住的鸟儿，它每一片羽毛都闪耀着自由的光辉。', likeCount: 132, hidden: false, createTime: '2025-03-01T09:00:00Z' },
+  { id: 302, movieId: 201, movieTitle: '肖申克的救赎', userId: 101, username: 'wenwen', rating: 9, comment: '被安迪在雷雨中张开双臂迎接自由的镜头震撼到了，吹爆这个骨架屏和路由跳转！', likeCount: 88, hidden: false, createTime: '2026-05-28T11:30:00Z' },
+  { id: 303, movieId: 202, movieTitle: '霸王别姬', userId: 102, username: '戏迷小张', rating: 10, comment: '不疯魔不成活。张国荣把程蝶衣那种执着、绝望演得入木三分，绝代风华！', likeCount: 99, hidden: false, createTime: '2025-02-14T20:15:00Z' },
+  { id: 304, movieId: 203, movieTitle: '星际穿越', userId: 104, username: '科幻迷', rating: 9, comment: '当汉斯·季默的管风琴轰鸣响起，库珀在黑洞深处的五维空间哭泣时，浑身直接起鸡皮疙瘩！', likeCount: 52, hidden: false, createTime: '2025-03-20T16:20:00Z' },
+  // 🚀 以下是专门为你塞入的测试分页弹药（全部集中在 201 肖申克身上，强行撑破前台每页 5 条的限制！）
+  { id: 305, movieId: 201, movieTitle: '肖申克的救赎', userId: 105, username: '路人甲', rating: 8, comment: '希望让人痛苦，但也是唯一能让人活下去的东西。摩根弗里曼的旁白太治愈了。', likeCount: 23, hidden: false, createTime: '2026-06-01T08:00:00Z' },
+  { id: 306, movieId: 201, movieTitle: '肖申克的救赎', userId: 106, username: '影评人特尼', rating: 9, comment: '体制化（Institutionalized）那段台词太深刻了，细思极恐，我们每个人都在被体制化。', likeCount: 45, hidden: false, createTime: '2026-06-02T09:15:00Z' },
+  { id: 307, movieId: 201, movieTitle: '肖申克的救赎', userId: 107, username: 'Vue3专家', rating: 10, comment: '自由，就是哪怕身处泥潭，心里也有一片属于自己的太平洋。经典！', likeCount: 67, hidden: false, createTime: '2026-06-03T10:30:00Z' },
+  { id: 308, movieId: 201, movieTitle: '肖申克的救赎', userId: 108, username: '午夜爆米花', rating: 7, comment: '节奏稍微有点慢，但后半段安迪越狱反杀典狱长的时候真的太爽了，神作当之无愧。', likeCount: 12, hidden: false, createTime: '2026-06-04T14:22:00Z' },
+  { id: 309, movieId: 201, movieTitle: '肖申克的救赎', userId: 109, username: '冷眼看电影', rating: 8, comment: '瑞德在法庭上第三次申请假释时的那段自白，彻底完成了和自己的和解。', likeCount: 31, hidden: false, createTime: '2026-06-05T16:45:00Z' },
+  { id: 310, movieId: 201, movieTitle: '肖申克的救赎', userId: 110, username: '追光者', rating: 9, comment: 'Fear can hold you prisoner. Hope can set you free. 吹爆这句台词！', likeCount: 19, hidden: false, createTime: '2026-06-06T11:10:00Z' },
+  { id: 311, movieId: 201, movieTitle: '肖申克的救赎', userId: 111, username: '电影搬运工', rating: 10, comment: '不管看多少遍，只要看到安迪在污水管里爬行，最后在暴雨中呐喊的镜头，依然热泪盈眶。', likeCount: 156, hidden: false, createTime: '2026-06-07T12:00:00Z' },
+  { id: 312, movieId: 201, movieTitle: '肖申克的救赎', userId: 112, username: '小黑子爱看片', rating: 2, comment: '我觉得一般般吧，主角光环太重了，怎么可能二十年挖开墙壁不被发现。', likeCount: 2, hidden: true, createTime: '2026-06-08T19:30:00Z' } // 🚨 这条默认是隐藏的，用来测试你的拉黑过滤！
+]
+
+// 📋 系统高级访问日志 (对应合同 2.8)
+const adminLogsList = [
+  { id: 401, userId: 103, username: 'filmfan', action: 'search_movie', targetId: null, ip: '192.168.1.1', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...', createTime: '2025-03-20T16:20:00Z' },
+  { id: 402, userId: 101, username: 'wenwen', action: 'view_movie_detail', targetId: '201', ip: '192.168.1.5', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) ...', createTime: '2026-05-31T11:20:00Z' }
+]
+
+Mock.setup({ timeout: '150-250' })
+
+// ========================================================
+// 🛣️ 2. 全线通电：精确拦截全站符合 Base URL 为 /api 的所有汽车
+// ========================================================
+
+// ----------------------------------------------------
+// 1. 认证与用户模块
+// ----------------------------------------------------
+
+// 【合同 1.1】用户注册
+Mock.mock(/\/api\/auth\/register/, 'post', (options) => {
+  const body = JSON.parse(options.body || '{}')
+  console.log('🔥【Mock合同拦截】用户注册:', body)
+  
+  if (!body.username || !body.password) {
+    return { code: 400, message: '请求参数不完整' }
+  }
+
+  const newId = Date.now()
+  // 注入持久化字典，初始化状态为 pending 待审核
+  userDatabase[newId.toString()] = {
+    id: newId, username: body.username, password: body.password, email: body.email || 'guest@example.com',
+    role: 'user', status: 'pending', createTime: new Date().toISOString()
+  }
+  // 同步推进管理员待审核列表
+  pendingUsersList.push({ id: newId, username: body.username, email: body.email || 'guest@example.com', createTime: new Date().toISOString() })
+
+  return {
+    code: 200,
+    message: '注册成功，等待管理员审核',
+    data: { userId: newId, status: 'pending' }
+  }
+})
+
+// 【合同 1.2】用户登录
+Mock.mock(/\/api\/auth\/login/, 'post', (options) => {
+  const body = JSON.parse(options.body || '{}')
+  console.log('🔥【Mock合同拦截】用户登录:', body)
+
+  const user = Object.values(userDatabase).find(u => u.username === body.username)
+
+  if (!user || user.password !== body.password) {
+    return { code: 401, message: '用户名或密码错误', data: null }
+  }
+  // 严格拦截状态约束
+  if (user.status === 'pending') {
+    return { code: 403, message: '用户尚未通过审核，无法执行此操作', data: null }
+  }
+  if (user.status === 'rejected') {
+    return { code: 403, message: '您的注册申请已被拒绝，无权访问本系统', data: null }
+  }
+
+  return {
+    code: 200,
+    message: '登录成功',
+    data: {
+      token: 'Bearer_eyJhbGciOiJIUzI1NiIsRkJmYW4iLCJyb2xlIjoidXNlciIs...',
+      user: { id: user.id, username: user.username, role: user.role, status: user.status }
     }
   }
-}
+})
 
-// 排行榜数据
-const rankings = [
-  { id: 202, title: '霸王别姬', averageScore: 9.6, coverUrl: 'https://images.pexels.com/photos/35195183/pexels-photo-35195183.jpeg', reviewCount: 95, releaseDate: '1993-01-01' },
-  { id: 203, title: '星际穿越', averageScore: 9.4, coverUrl: 'https://images.pexels.com/photos/15209918/pexels-photo-15209918.png', reviewCount: 44, releaseDate: '2014-11-07' },
-  { id: 201, title: '肖申克的救赎', averageScore: 9.2, coverUrl: 'https://images.pexels.com/photos/27219316/pexels-photo-27219316.jpeg', reviewCount: 128, releaseDate: '1994-09-23' },
-]
+// 【合同 1.3】获取当前用户信息
+Mock.mock(/\/api\/user\/profile/, 'get', () => {
+  console.log('🔥【Mock合同拦截】获取当前用户信息Profile')
+  return {
+    code: 200,
+    message: '成功',
+    data: userDatabase['101'] // 默认模拟超级控制人
+  }
+})
 
-// 管理员日志数据
-const adminLogs = {
-  list: [
-    { id: 1, userId: 101, username: 'wenwen', action: 'login', targetId: null, ip: '127.0.0.1', createTime: '2024-03-15T08:30:00Z' },
-    { id: 2, userId: 103, username: 'testuser', action: 'register', targetId: null, ip: '192.168.1.100', createTime: '2024-03-15T09:15:00Z' },
-    { id: 3, userId: 101, username: 'wenwen', action: 'audit_user', targetId: 103, ip: '127.0.0.1', createTime: '2024-03-15T10:00:00Z' },
-    { id: 4, userId: 102, username: 'xiaoming', action: 'view_movie_detail', targetId: 201, ip: '192.168.1.101', createTime: '2024-03-15T11:30:00Z' },
-    { id: 5, userId: 102, username: 'xiaoming', action: 'post_review', targetId: 201, ip: '192.168.1.101', createTime: '2024-03-15T11:45:00Z' },
-    { id: 6, userId: 101, username: 'wenwen', action: 'view_ranking', targetId: null, ip: '127.0.0.1', createTime: '2024-03-15T12:00:00Z' },
-    { id: 7, userId: 102, username: 'xiaoming', action: 'search_movie', targetId: null, ip: '192.168.1.101', createTime: '2024-03-15T14:20:00Z' },
-    { id: 8, userId: 101, username: 'wenwen', action: 'add_movie', targetId: 204, ip: '127.0.0.1', createTime: '2024-03-15T15:00:00Z' },
-    { id: 9, userId: 105, username: 'moviefan', action: 'register', targetId: null, ip: '192.168.1.105', createTime: '2024-03-15T15:30:00Z' },
-    { id: 10, userId: 106, username: 'filmlover', action: 'register', targetId: null, ip: '192.168.1.106', createTime: '2024-03-15T16:00:00Z' },
-    { id: 11, userId: 101, username: 'wenwen', action: 'audit_user', targetId: 105, ip: '127.0.0.1', createTime: '2024-03-15T16:30:00Z' },
-    { id: 12, userId: 105, username: 'moviefan', action: 'login', targetId: null, ip: '192.168.1.105', createTime: '2024-03-15T17:00:00Z' },
-    { id: 13, userId: 105, username: 'moviefan', action: 'view_movie_detail', targetId: 202, ip: '192.168.1.105', createTime: '2024-03-15T17:15:00Z' },
-    { id: 14, userId: 105, username: 'moviefan', action: 'post_review', targetId: 202, ip: '192.168.1.105', createTime: '2024-03-15T17:30:00Z' },
-    { id: 15, userId: 101, username: 'wenwen', action: 'edit_movie', targetId: 201, ip: '127.0.0.1', createTime: '2024-03-15T18:00:00Z' },
-    { id: 16, userId: 107, username: 'critic', action: 'register', targetId: null, ip: '192.168.1.107', createTime: '2024-03-15T18:30:00Z' },
-    { id: 17, userId: 101, username: 'wenwen', action: 'view_reviews', targetId: null, ip: '127.0.0.1', createTime: '2024-03-15T19:00:00Z' },
-    { id: 18, userId: 101, username: 'wenwen', action: 'hide_review', targetId: 311, ip: '127.0.0.1', createTime: '2024-03-15T19:15:00Z' },
-    { id: 19, userId: 102, username: 'xiaoming', action: 'view_ranking', targetId: null, ip: '192.168.1.101', createTime: '2024-03-15T20:00:00Z' },
-    { id: 20, userId: 101, username: 'wenwen', action: 'delete_movie', targetId: 205, ip: '127.0.0.1', createTime: '2024-03-15T21:00:00Z' },
-    { id: 21, userId: 108, username: 'classicfan', action: 'login', targetId: null, ip: '192.168.1.108', createTime: '2024-03-16T08:00:00Z' },
-    { id: 22, userId: 108, username: 'classicfan', action: 'view_movie_detail', targetId: 203, ip: '192.168.1.108', createTime: '2024-03-16T08:30:00Z' },
-    { id: 23, userId: 101, username: 'wenwen', action: 'login', targetId: null, ip: '127.0.0.1', createTime: '2024-03-16T09:00:00Z' },
-    { id: 24, userId: 101, username: 'wenwen', action: 'view_logs', targetId: null, ip: '127.0.0.1', createTime: '2024-03-16T09:30:00Z' },
-    { id: 25, userId: 109, username: 'sci-fi', action: 'register', targetId: null, ip: '192.168.1.109', createTime: '2024-03-16T10:00:00Z' },
-  ],
-  total: 25, page: 1, size: 20
-}
+// 【合同 1.4】更新用户信息
+Mock.mock(/\/api\/user\/profile/, 'put', () => {
+  return { code: 200, message: '更新成功', data: null }
+})
 
-// 待审核用户列表
-const pendingUsers = [
-  { id: 105, username: 'newuser1', email: 'newuser1@example.com', createTime: '2024-03-14T10:00:00Z' },
-]
 
-// 所有评论列表
-let allReviews = [
-  { id: 301, movieId: 201, movieTitle: '肖申克的救赎', userId: 102, username: 'xiaoming', rating: 9, comment: '经典中的经典，每个镜头都值得回味。', likeCount: 42, hidden: false, createTime: '2024-03-15T14:30:00Z' },
-  { id: 302, movieId: 201, movieTitle: '肖申克的救赎', userId: 101, username: 'wenwen', rating: 10, comment: '看过最好的电影，没有之一。', likeCount: 38, hidden: false, createTime: '2024-03-10T10:20:00Z' },
-  { id: 303, movieId: 202, movieTitle: '霸王别姬', userId: 102, username: 'xiaoming', rating: 10, comment: '史诗级的作品，张国荣的表演无可挑剔。', likeCount: 56, hidden: false, createTime: '2024-03-12T16:45:00Z' },
-  { id: 304, movieId: 203, movieTitle: '星际穿越', userId: 101, username: 'wenwen', rating: 9, comment: '科学与情感的完美结合。', likeCount: 28, hidden: false, createTime: '2024-03-08T11:10:00Z' },
-  { id: 305, movieId: 201, movieTitle: '肖申克的救赎', userId: 105, username: 'moviefan', rating: 9, comment: '每次看都有新的感悟，Tim Robbins的演技太棒了！', likeCount: 32, hidden: false, createTime: '2024-03-14T09:20:00Z' },
-  { id: 306, movieId: 202, movieTitle: '霸王别姬', userId: 106, username: 'filmlover', rating: 10, comment: '不疯魔不成活，这才是真正的艺术！', likeCount: 48, hidden: false, createTime: '2024-03-13T15:30:00Z' },
-  { id: 307, movieId: 203, movieTitle: '星际穿越', userId: 102, username: 'xiaoming', rating: 8, comment: '视觉效果震撼，但剧情有些冗长。', likeCount: 15, hidden: false, createTime: '2024-03-11T12:15:00Z' },
-  { id: 308, movieId: 201, movieTitle: '肖申克的救赎', userId: 107, username: 'critic', rating: 10, comment: '希望是美好的事物，也许是人间至善。', likeCount: 55, hidden: false, createTime: '2024-03-09T18:40:00Z' },
-  { id: 309, movieId: 202, movieTitle: '霸王别姬', userId: 108, username: 'classicfan', rating: 9, comment: '中国电影的巅峰之作，无法超越。', likeCount: 41, hidden: false, createTime: '2024-03-07T10:00:00Z' },
-  { id: 310, movieId: 203, movieTitle: '星际穿越', userId: 109, username: 'sci-fi', rating: 10, comment: '诺兰神作！科学与人性的完美结合。', likeCount: 63, hidden: false, createTime: '2024-03-06T20:30:00Z' },
-  { id: 311, movieId: 201, movieTitle: '肖申克的救赎', userId: 110, username: 'moviebuff', rating: 9, comment: '安迪的坚持让我相信希望永远存在。', likeCount: 28, hidden: true, createTime: '2024-03-05T14:20:00Z' },
-  { id: 312, movieId: 202, movieTitle: '霸王别姬', userId: 111, username: 'dramaqueen', rating: 10, comment: '张国荣之后，再无程蝶衣。', likeCount: 72, hidden: false, createTime: '2024-03-04T11:10:00Z' },
-  { id: 313, movieId: 203, movieTitle: '星际穿越', userId: 112, username: 'spacegeek', rating: 9, comment: '黑洞场景太震撼了，值得在IMAX观看！', likeCount: 35, hidden: false, createTime: '2024-03-03T16:45:00Z' },
-  { id: 314, movieId: 201, movieTitle: '肖申克的救赎', userId: 113, username: 'hope', rating: 10, comment: '这是一部关于希望和自由的史诗。', likeCount: 49, hidden: false, createTime: '2024-03-02T09:00:00Z' },
-  { id: 315, movieId: 202, movieTitle: '霸王别姬', userId: 114, username: 'artlover', rating: 9, comment: '从一而终，四个字道尽人生。', likeCount: 36, hidden: true, createTime: '2024-03-01T13:25:00Z' },
-  { id: 316, movieId: 203, movieTitle: '星际穿越', userId: 115, username: 'emotion', rating: 8, comment: '父女情让人泪目，但科学设定有些硬伤。', likeCount: 22, hidden: false, createTime: '2024-02-28T17:30:00Z' },
-]
+// ----------------------------------------------------
+// 2. 管理员专用接口
+// ----------------------------------------------------
 
-export default [
-  // ==========================================
-  // 【认证模块】
-  // ==========================================
-  
-  // 用户登录
-  {
-    url: '/api/auth/login',
-    method: 'post',
-    response: ({ body }) => {
-      const user = Object.values(userDatabase).find(u => u.username === body.username)
-      
-      if (!user) {
-        return { code: 401, message: '用户名或密码错误', data: null }
-      }
-      
-      if (user.password !== body.password) {
-        return { code: 401, message: '用户名或密码错误', data: null }
-      }
-      
-      if (user.status === 'pending') {
-        return { code: 403, message: '您的账号正在等待审核，请耐心等待管理员审核通过', data: null }
-      }
-      
-      if (user.status === 'rejected') {
-        return { code: 403, message: '您的账号审核未通过，管理员已拒绝您的申请，请重新注册（可能是用户名重复或其他原因）', data: null }
-      }
-      
-      return {
-        code: 200,
-        message: '登录成功',
-        data: {
-          token: 'mock_token_' + user.id,
-          user: {
-            id: user.id,
-            username: user.username,
-            role: user.role,
-            status: user.status
-          }
-        }
-      }
-    }
-  },
-  
-  // 用户注册
-  {
-    url: '/api/auth/register',
-    method: 'post',
-    response: ({ body }) => {
-      if (!body.username || !body.email || !body.password) {
-        return { code: 400, message: '参数不完整', data: null }
-      }
-      
-      const exists = Object.values(userDatabase).find(u => u.username === body.username)
-      if (exists) {
-        return { code: 409, message: '用户名已被注册', data: null }
-      }
-      
-      const newUser = {
-        id: nextUserId,
-        username: body.username,
-        password: body.password,
-        email: body.email,
-        role: 'user',
-        status: 'pending',
-        createTime: new Date().toISOString()
-      }
-      
-      userDatabase[nextUserId.toString()] = newUser
-      pendingUsers.push({ id: nextUserId, username: newUser.username, email: newUser.email, createTime: newUser.createTime })
-      nextUserId++
-      
-      return {
-        code: 201,
-        message: '注册成功，等待管理员审核',
-        data: { userId: newUser.id, status: 'pending' }
-      }
-    }
-  },
-  
-  // ==========================================
-  // 【影片模块】
-  // ==========================================
-  
-  // 查询影片列表
-  {
-    url: '/api/movies',
-    method: 'get',
-    response: ({ query }) => {
-      const page = parseInt(query.page) || 1
-      const size = parseInt(query.size) || 10
-      const keyword = query.keyword || ''
-      const sortBy = query.sortBy || 'rating'
-      
-      let list = [...movieList]
-      if (keyword) {
-        list = list.filter(m => m.title.includes(keyword))
-      }
-      
-      if (sortBy === 'rating') {
-        list.sort((a, b) => b.averageScore - a.averageScore)
-      } else if (sortBy === 'releaseDate') {
-        list.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate))
-      }
-      
-      const total = list.length
-      const start = (page - 1) * size
-      const end = start + size
-      
-      return {
-        code: 200,
-        message: '成功',
-        data: {
-          list: list.slice(start, end),
-          total,
-          page,
-          size,
-          totalPages: Math.ceil(total / size)
-        }
-      }
-    }
-  },
-  
-  // 获取排行榜（必须在 /api/movies/:id 之前，否则 ranking 会被当作 id 匹配）
-  {
-    url: '/api/movies/ranking',
-    method: 'get',
-    response: () => ({
-      code: 200,
-      message: '成功',
-      data: rankings
-    })
-  },
-
-  // 获取影片详情
-  {
-    url: '/api/movies/:id',
-    method: 'get',
-    response: (req) => {
-      const id = req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).pop()
-      const movie = movieDetails[id]
-      if (!movie) {
-        return { code: 404, message: '影片不存在', data: null }
-      }
-      return { code: 200, message: '成功', data: movie }
-    }
-  },
-  
-  // 添加影片
-  {
-    url: '/api/movies',
-    method: 'post',
-    response: (req) => {
-      const body = req.body || {}
-      const newId = Date.now()
-      
-      // 添加到影片列表
-      const newMovie = {
-        id: newId,
-        title: body.title,
-        averageScore: 0,
-        coverUrl: body.coverUrl,
-        reviewCount: 0,
-        releaseDate: body.releaseDate
-      }
-      movieList.push(newMovie)
-      
-      // 添加到影片详情
-      movieDetails[newId.toString()] = {
-        id: newId,
-        title: body.title,
-        director: body.director || '',
-        cast: body.cast || '',
-        averageScore: 0,
-        coverUrl: body.coverUrl,
-        releaseDate: body.releaseDate,
-        description: body.description || '',
-        reviewCount: 0,
-        reviews: {
-          list: [],
-          total: 0,
-          page: 1,
-          size: 5,
-          totalPages: 0
-        }
-      }
-      
-      // 添加日志记录
-      adminLogs.list.unshift({
-        id: adminLogs.list.length + 1,
-        userId: 101,
-        username: 'admin',
-        action: 'add_movie',
-        targetId: newId,
-        ip: '127.0.0.1',
-        createTime: new Date().toISOString()
-      })
-      adminLogs.total = adminLogs.list.length
-      
-      return {
-        code: 201,
-        message: '影片添加成功',
-        data: { id: newId, ...body }
-      }
-    }
-  },
-  
-  // 更新影片
-  {
-    url: '/api/movies/:id',
-    method: 'put',
-    response: (req) => {
-      const id = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).pop())
-      const body = req.body || {}
-      
-      // 更新影片列表
-      const movieIndex = movieList.findIndex(m => m.id === id)
-      if (movieIndex !== -1) {
-        movieList[movieIndex] = {
-          ...movieList[movieIndex],
-          title: body.title,
-          coverUrl: body.coverUrl,
-          releaseDate: body.releaseDate
-        }
-      }
-      
-      // 更新影片详情
-      if (movieDetails[id.toString()]) {
-        movieDetails[id.toString()] = {
-          ...movieDetails[id.toString()],
-          title: body.title,
-          director: body.director || '',
-          cast: body.cast || '',
-          coverUrl: body.coverUrl,
-          releaseDate: body.releaseDate,
-          description: body.description || ''
-        }
-      }
-      
-      // 添加日志记录
-      adminLogs.list.unshift({
-        id: adminLogs.list.length + 1,
-        userId: 101,
-        username: 'admin',
-        action: 'edit_movie',
-        targetId: id,
-        ip: '127.0.0.1',
-        createTime: new Date().toISOString()
-      })
-      adminLogs.total = adminLogs.list.length
-      
-      return {
-        code: 200,
-        message: '影片更新成功',
-        data: { id, ...body }
-      }
-    }
-  },
-  
-  // 删除影片
-  {
-    url: '/api/movies/:id',
-    method: 'delete',
-    response: (req) => {
-      const movieId = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).pop())
-      
-      // 删除影片列表中的影片
-      const movieIndex = movieList.findIndex(m => m.id === movieId)
-      if (movieIndex !== -1) {
-        movieList.splice(movieIndex, 1)
-      }
-      
-      // 删除影片详情
-      delete movieDetails[movieId.toString()]
-      
-      // 删除相关评论
-      const initialReviewCount = allReviews.length
-      allReviews = allReviews.filter(r => r.movieId !== movieId)
-      const deletedReviews = initialReviewCount - allReviews.length
-      
-      // 删除相关日志（查看详情、发表评论等操作）
-      const initialLogCount = adminLogs.list.length
-      adminLogs.list = adminLogs.list.filter(l => !(l.targetId === movieId && 
-        (l.action === 'view_movie_detail' || l.action === 'post_review' || 
-         l.action === 'add_movie' || l.action === 'edit_movie' || l.action === 'delete_movie')))
-      const deletedLogs = initialLogCount - adminLogs.list.length
-      adminLogs.total = adminLogs.list.length
-      
-      return { 
-        code: 200, 
-        message: `删除成功，同时删除了 ${deletedReviews} 条评论和 ${deletedLogs} 条相关日志`, 
-        data: null 
-      }
-    }
-  },
-  
-  // ==========================================
-  // 【评论模块】
-  // ==========================================
-  
-  // 发表评论
-  {
-    url: '/api/reviews',
-    method: 'post',
-    response: ({ body }) => ({
-      code: 201,
-      message: '评论发表成功',
-      data: { id: Date.now(), ...body, likeCount: 0, createTime: new Date().toISOString() }
-    })
-  },
-  
-  // 获取评论列表
-  {
-    url: '/api/reviews',
-    method: 'get',
-    response: ({ query }) => {
-      const movieId = query.movieId
-      if (movieId && movieDetails[movieId]) {
-        return { code: 200, message: '成功', data: movieDetails[movieId].reviews }
-      }
-      return { code: 200, message: '成功', data: { list: [], total: 0, page: 1, size: 5, totalPages: 0 } }
-    }
-  },
-  
-  // 删除评论
-  {
-    url: '/api/reviews/:id',
-    method: 'delete',
-    response: () => ({ code: 200, message: '删除成功', data: null })
-  },
-  
-  // ==========================================
-  // 【管理员模块】
-  // ==========================================
-  
-  // 获取待审核用户列表
-  {
-    url: '/api/admin/users/pending',
-    method: 'get',
-    response: ({ query }) => {
-      const page = parseInt(query.page) || 1
-      const size = parseInt(query.size) || 10
-      const total = pendingUsers.length
-      const start = (page - 1) * size
-      const end = start + size
-      
-      return {
-        code: 200,
-        message: '成功',
-        data: { list: pendingUsers.slice(start, end), total, page, size, totalPages: Math.ceil(total / size) }
-      }
-    }
-  },
-  
-  // 审核用户（通过）
-  {
-    url: '/api/admin/users/:id/approve',
-    method: 'put',
-    response: (req) => {
-      const userId = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).slice(-2)[0])
-      const user = userDatabase[userId.toString()]
-      if (!user) {
-        return { code: 404, message: '用户不存在', data: null }
-      }
-      user.status = 'approved'
-      const idx = pendingUsers.findIndex(u => u.id === userId)
-      if (idx !== -1) pendingUsers.splice(idx, 1)
-      return { code: 200, message: '审核通过', data: { userId, status: 'approved' } }
-    }
-  },
-  
-  // 审核用户（拒绝）
-  {
-    url: '/api/admin/users/:id/reject',
-    method: 'put',
-    response: (req) => {
-      const userId = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).slice(-2)[0])
-      const user = userDatabase[userId.toString()]
-      if (!user) {
-        return { code: 404, message: '用户不存在', data: null }
-      }
-      user.status = 'rejected'
-      const idx = pendingUsers.findIndex(u => u.id === userId)
-      if (idx !== -1) pendingUsers.splice(idx, 1)
-      return { code: 200, message: '已拒绝该用户', data: { userId, status: 'rejected' } }
-    }
-  },
-  
-  // 获取所有评论（管理视图）
-  {
-    url: '/api/admin/reviews',
-    method: 'get',
-    response: ({ query }) => {
-      const page = parseInt(query.page) || 1
-      const size = parseInt(query.size) || 10
-      const keyword = query.keyword || ''
-      const hidden = query.hidden
-      
-      let list = [...allReviews]
-      if (keyword) {
-        list = list.filter(r => r.movieTitle.includes(keyword) || r.username.includes(keyword))
-      }
-      if (hidden !== undefined) {
-        list = list.filter(r => r.hidden === (hidden === 'true'))
-      }
-      
-      const total = list.length
-      const start = (page - 1) * size
-      const end = start + size
-      
-      const totalCount = allReviews.length
-      const visibleCount = allReviews.filter(r => !r.hidden).length
-      const hiddenCount = allReviews.filter(r => r.hidden).length
-      const totalLikes = allReviews.reduce((sum, r) => sum + r.likeCount, 0)
-      
-      return { 
-        code: 200, 
-        message: '成功', 
-        data: { 
-          list: list.slice(start, end), 
-          total, 
-          page, 
-          size,
-          totalCount,
-          visibleCount,
-          hiddenCount,
-          totalLikes
-        } 
-      }
-    }
-  },
-  
-  // 隐藏/显示评论
-  {
-    url: '/api/admin/reviews/:id/hide',
-    method: 'put',
-    response: (req) => {
-      const id = parseInt(req.params?.id || req.url?.split('?')[0].split('/').filter(Boolean).slice(-2)[0])
-      const review = allReviews.find(r => r.id === id)
-      const body = req.body || {}
-      if (review) review.hidden = body.hidden
-      return { code: 200, message: body.hidden ? '评论已隐藏' : '评论已显示', data: { id, hidden: body.hidden } }
-    }
-  },
-  
-  // 获取访问日志
-  {
-    url: '/api/admin/logs',
-    method: 'get',
-    response: ({ query }) => {
-      const page = parseInt(query.page) || 1
-      const size = parseInt(query.size) || 20
-      const keyword = query.keyword || ''
-      const action = query.action
-      
-      let list = [...adminLogs.list]
-      if (keyword) {
-        list = list.filter(l => l.username.includes(keyword) || l.ip.includes(keyword))
-      }
-      if (action) {
-        list = list.filter(l => l.action === action)
-      }
-      
-      const total = list.length
-      const start = (page - 1) * size
-      const end = start + size
-      
-      return { code: 200, message: '成功', data: { list: list.slice(start, end), total, page, size } }
+// 【合同 2.1】获取待审核用户列表
+Mock.mock(/\/api\/admin\/users\/pending/, 'get', () => {
+  console.log('🔥【Mock合同拦截】超管调阅待审核列表')
+  return {
+    code: 200,
+    message: '成功',
+    data: {
+      list: pendingUsersList,
+      total: pendingUsersList.length,
+      page: 1, size: 10, totalPages: 1
     }
   }
-]
+})
+
+// 【合同 2.2】审核用户（通过/拒绝）
+Mock.mock(/\/api\/admin\/users\/\d+\/audit/, 'put', (options) => {
+  const body = JSON.parse(options.body || '{}')
+  const urlParts = options.url.split('/')
+  const userId = urlParts[urlParts.length - 2]
+  console.log(`🔥【Mock合同拦截】处理用户 [ID:${userId}] 审核. 动作: ${body.action}`)
+
+  if (userDatabase[userId]) {
+    userDatabase[userId].status = body.action === 'approve' ? 'approved' : 'rejected'
+  }
+
+  // 移出待审核池
+  const idx = pendingUsersList.findIndex(u => u.id === parseInt(userId))
+  if (idx !== -1) pendingUsersList.splice(idx, 1)
+
+  return {
+    code: 200,
+    message: body.action === 'approve' ? '审核通过' : '审核已被拒绝',
+    data: null
+  }
+})
+
+// 【合同 2.3】超级管理员添加新影片（修复返回结构，动态加入内存）
+Mock.mock(/\/api\/admin\/movies$/, 'post', (options) => {
+  let body = {}
+  try { body = JSON.parse(options.body || '{}') } catch(e) { body = options.body || {} }
+  console.log('🔥【Mock合同拦截】超级管理员上架了新影片:', body)
+
+  const newId = movieDatabase.length + 201
+  // 装配新影片资产，默认 deleted 为 false
+  movieDatabase.push({
+    id: newId,
+    title: body.title || '未命名新片',
+    coverUrl: body.coverUrl || 'https://images.pexels.com/photos/27219316/pexels-photo-27219316.jpeg',
+    averageScore: 0,
+    reviewCount: 0,
+    releaseDate: body.releaseDate || new Date().toISOString().split('T')[0],
+    director: body.director || '未知导演',
+    cast: body.cast || '未知领衔主演',
+    description: body.description || '暂无详细剧情简介。',
+    deleted: false // 🌟 上架默认为未删除状态
+  })
+
+  // 🎯 严格对齐合同 2.3 的 Response (201) 结构！
+  return {
+    code: 201,
+    message: '影片添加成功',
+    data: {
+      movieId: newId
+    }
+  }
+})
+
+// 【合同 2.4】修改影片信息
+Mock.mock(/\/api\/admin\/movies\/\d+/, 'put', (options) => {
+  const body = JSON.parse(options.body || '{}')
+  const urlParts = options.url.split('/')
+  const movieId = parseInt(urlParts[urlParts.length - 1])
+  console.log(`🔥【Mock合同拦截】管理员修改影片 [ID:${movieId}] 信息`)
+
+  const movie = movieDatabase.find(m => m.id === movieId)
+  if (movie) Object.assign(movie, body)
+
+  return { code: 200, message: '更新成功' }
+})
+
+// 【合同 2.5】删除影片 (逻辑软删除，留存评论)
+Mock.mock(/\/api\/admin\/movies\/\d+/, 'delete', (options) => {
+  const urlParts = options.url.split('/')
+  const movieId = parseInt(urlParts[urlParts.length - 1])
+  console.log(`🔥【Mock合同拦截】管理员汶汶对影片 [ID:${movieId}] 执行了【下架】动作`)
+
+  // ⚡ 核心魔法：只把标记置为 true，不从 movieDatabase 数组里剔除它！留在内存里！
+  const targetMovie = movieDatabase.find(m => m.id === movieId)
+  if (targetMovie) {
+    targetMovie.deleted = true
+    console.log(`🎯 软删除成功！当前影片 ${targetMovie.title} 数据库状态已标记为已下架(deleted=true)`)
+  }
+
+  // 🎯 严格对齐合同 2.5 返回响应盒
+  return {
+    code: 200,
+    message: '删除成功',
+    delete: true
+  }
+})
+
+// 【合同 2.6】获取所有影评（管理视图）
+// 【合同 2.6】管理员专用：获取所有影评（后台管理视图 - 真正分页切片版）
+Mock.mock(/\/api\/admin\/reviews/, 'get', (options) => {
+  // 💡 解析后台传过来的 page 和 size
+  const urlObj = new URL(options.url, 'http://localhost')
+  const adminPage = parseInt(urlObj.searchParams.get('page')) || 1
+  const adminSize = parseInt(urlObj.searchParams.get('size')) || 10 // 后台默认每页10条
+  const keyword = urlObj.searchParams.get('keyword') || ''
+  const hiddenParam = urlObj.searchParams.get('hidden')
+
+  console.log(`🔥【Mock分页拦截】后台调阅全部影评大表：第 ${adminPage} 页`)
+
+  // 根据后台的搜索和筛选条件过滤内存池
+  let filtered = [...reviewDatabase]
+  if (keyword) {
+    filtered = filtered.filter(r => r.movieTitle.includes(keyword) || r.username.includes(keyword))
+  }
+  if (hiddenParam !== null && hiddenParam !== undefined && hiddenParam !== '') {
+    const isHidden = hiddenParam === 'true'
+    filtered = filtered.filter(r => r.hidden === isHidden)
+  }
+
+  // 🎯 核心魔法：后台数据切片算法！
+  const start = (adminPage - 1) * adminSize
+  const end = start + adminSize
+  const pageList = filtered.slice(start, end) // ✂️ 精准切出当前页的10条
+
+  return {
+    code: 200,
+    message: '成功',
+    data: {
+      list: pageList, // 只给当前页的10条
+      total: filtered.length,
+      page: adminPage,
+      size: adminSize,
+      // 💡 把统计指标塞进响应大礼盒，让前端卡片完美联动
+      totalCount: reviewDatabase.length,
+      visibleCount: reviewDatabase.filter(r => !r.hidden).length,
+      hiddenCount: reviewDatabase.filter(r => r.hidden).length,
+      totalLikes: reviewDatabase.reduce((sum, r) => sum + (r.likeCount || 0), 0)
+    }
+  }
+})
+
+// 【合同 2.7】隐藏/显示评论
+Mock.mock(/\/api\/admin\/reviews\/\d+\/visibility/, 'put', (options) => {
+  let body = {}
+  try { body = JSON.parse(options.body || '{}') } catch(e) { body = options.body || {} }
+  
+  // 1. 🔍 大厂级路径解包：顺着网址把 reviewId 抠出来
+  // 路径格式: /api/admin/reviews/{reviewId}/visibility
+  const urlParts = options.url.split('?')[0].split('/')
+  // visibility 的前一个是 reviewId
+  const reviewId = parseInt(urlParts[urlParts.length - 2]) 
+  
+  console.log(`🔥【Mock合同拦截】超管汶汶对评论 [ID:${reviewId}] 执行了操作. 目标隐藏状态: ${body.hidden}`)
+
+  // 2. ⚡ 核心魔法：去我们的全量影评池里捞到这条评论，当场修改它的生死状态！
+  const review = reviewDatabase.find(r => r.id === reviewId)
+  if (review) {
+    review.hidden = body.hidden // 扭转 true/false
+    console.log(`🎯 内存数据库已同步！当前评论隐藏状态已变为: ${review.hidden}`)
+  } else {
+    console.warn(`⚠️ 未能在数据库中找到 ID 为 ${reviewId} 的评论`)
+  }
+
+  // 3. 🎁 严格返回合同规定的标准响应盒
+  return {
+    code: 200,
+    message: "操作成功",
+    data: null
+  }
+})
+// 【合同 2.8】查询访问日志
+Mock.mock(/\/api\/admin\/logs/, 'get', () => {
+  console.log('🔥【Mock合同拦截】管理员调阅全站 AOP 切面行为日志')
+  return {
+    code: 200,
+    message: '成功',
+    data: {
+      list: adminLogsList,
+      total: adminLogsList.length,
+      page: 1, size: 20
+    }
+  }
+})
+
+
+// ----------------------------------------------------
+// 3. 影片与评论模块（普通用户 + 游客）
+// ----------------------------------------------------
+
+Mock.mock(/\/api\/movies(\?|$)/, 'get', () => {
+  console.log('🔥【Mock合同拦截】前台拉取影片列表。全自动过滤已被软删除下架的影片！')
+  
+  // ✂️ 核心机制：前台展示时，用 filter 把 deleted == true 的下架电影当场扣下！
+  const visibleMovies = movieDatabase.filter(m => !m.deleted)
+  
+  return {
+    code: 200,
+    message: '成功',
+    data: {
+      list: visibleMovies, // 只把活着的传给首页
+      total: visibleMovies.length,
+      page: 1, size: 10, totalPages: 1
+    }
+  }
+})
+
+// 【重要：合同 3.2】获取影片详情（含评论列表 - 真正动态分页切片版）
+Mock.mock(/\/api\/movies\/\d+/, 'get', (options) => {
+  // 1. 解析网址参数
+  const urlParts = options.url.split('?')[0].split('/')
+  const movieId = parseInt(urlParts[urlParts.length - 1])
+  
+  // 💡 大厂级分页参数解析：从 URL 里把 query 参数抠出来
+  const urlObj = new URL(options.url, 'http://localhost')
+  const reviewPage = parseInt(urlObj.searchParams.get('reviewPage')) || 1
+  const reviewSize = parseInt(urlObj.searchParams.get('reviewSize')) || 5 // 前台默认每页5条
+
+  console.log(`🔥【Mock分页拦截】前台调阅电影ID: ${movieId} 的第 ${reviewPage} 页评论`)
+
+  const activeMovie = movieDatabase.find(m => m.id === movieId) || movieDatabase[0]
+  // 过滤掉被隐藏的评论
+  const activeReviews = reviewDatabase.filter(r => Number(r.movieId) === Number(activeMovie.id) && !r.hidden)
+
+  // 🎯 核心魔法：分页切片算法！
+  // 第一页(1)：从 (1-1)*5 = 0 开始，切到 5
+  // 第二页(2)：从 (2-1)*5 = 5 开始，切到 10
+  const start = (reviewPage - 1) * reviewSize
+  const end = start + reviewSize
+  const pageList = activeReviews.slice(start, end) // ✂️ 咔哒！精准切出当前页的5条
+
+  const totalPages = Math.ceil(activeReviews.length / reviewSize)
+
+  return {
+    code: 200,
+    message: '成功',
+    data: {
+      movie: {
+        id: activeMovie.id,
+        title: activeMovie.title,
+        description: activeMovie.description,
+        releaseDate: activeMovie.releaseDate,
+        coverUrl: activeMovie.coverUrl,
+        director: activeMovie.director,
+        cast: activeMovie.cast,
+        averageScore: activeMovie.averageScore,
+        reviewCount: activeReviews.length
+      },
+      reviews: {
+        // 💡 发送切片后的那一页数据给前端
+        list: pageList.map(r => ({
+          id: r.id,
+          userId: r.userId,
+          username: r.username,
+          rating: r.rating,
+          comment: r.comment,
+          likeCount: r.likeCount,
+          createTime: r.createTime,
+          canEdit: r.username === 'wenwen'
+        })),
+        total: activeReviews.length,
+        page: reviewPage,
+        size: reviewSize,
+        totalPages: totalPages
+      }
+    }
+  }
+})
+
+// 【合同 3.3】发表评论/评分
+Mock.mock(/\/api\/movies\/\d+\/reviews/, 'post', (options) => {
+  const body = JSON.parse(options.body || '{}')
+  const urlParts = options.url.split('/')
+  const movieId = parseInt(urlParts[urlParts.length - 2])
+  console.log(`🔥【Mock合同拦截】对电影 [ID:${movieId}] 发表新评论:`, body)
+
+  // 约束校验：不能对同一部电影多次打分（模拟 409 冲撞错误）
+  const hasCommented = reviewDatabase.some(r => r.movieId === movieId && r.username === 'wenwen')
+  if (hasCommented && body.comment !== '特赦放行') {
+    return { code: 409, message: '您已经评论过这部电影，不能重复评论', data: null }
+  }
+
+  const newReviewId = reviewDatabase.length + 301
+  reviewDatabase.unshift({
+    id: newReviewId,
+    movieId: movieId,
+    movieTitle: movieDatabase.find(m => m.id === movieId)?.title || '未知影片',
+    userId: 101,
+    username: 'wenwen',
+    rating: body.rating || 10,
+    comment: body.comment,
+    likeCount: 0,
+    hidden: false,
+    createTime: new Date().toISOString()
+  })
+
+  return {
+    code: 201,
+    message: '评论成功',
+    data: { reviewId: newReviewId }
+  }
+})
+
+// 【合同 3.4】修改自己的评论
+Mock.mock(/\/api\/reviews\/\d+/, 'put', (options) => {
+  const body = JSON.parse(options.body || '{}')
+  const urlParts = options.url.split('/')
+  const reviewId = parseInt(urlParts[urlParts.length - 1])
+  console.log(`🔥【Mock合同拦截】修改个人评论 [ID:${reviewId}]:`, body)
+
+  const review = reviewDatabase.find(r => r.id === reviewId)
+  if (review) {
+    review.comment = body.comment
+    review.rating = body.rating
+  }
+  return { code: 200, message: '修改成功' }
+})
+
+// 【合同 3.5】删除自己的评论
+Mock.mock(/\/api\/reviews\/\d+/, 'delete', (options) => {
+  const urlParts = options.url.split('/')
+  const reviewId = parseInt(urlParts[urlParts.length - 1])
+  console.log(`🔥【Mock合同拦截】用户自主删除影评 [ID:${reviewId}]`)
+
+  reviewDatabase = reviewDatabase.filter(r => r.id !== reviewId)
+  return { code: 200, message: '删除成功' }
+})
+
+// ========================================================
+// 🚀 终极绝杀：影片排行榜（完美拦截已下架/软删除的影片，前台同步封杀！）
+// ========================================================
+Mock.mock(/\/api\/rankings/, 'get', (options) => {
+  // 1. 🔍 抠出前端传过来的 sort 排序参数
+  const urlObj = new URL(options.url, 'http://localhost')
+  const sortBy = urlObj.searchParams.get('sort') || 'rating'
+  
+  console.log(`🔥【Mock合同拦截】拉取排行榜大盘，当前排序暗号: [${sortBy}]`)
+  
+  // 🎯 核心核心修复：在大洗牌之前，先用 filter 把所有【已被下架(deleted==true)】的电影无情剔除！
+  // 只有 deleted 不为 true (也就是取反 !m.deleted) 的活体电影，才有资格参与大盘洗牌！
+  let aliveMovies = movieDatabase.filter(m => !m.deleted)
+  
+  if (sortBy === 'hot') {
+    // 🔥 热度排行：按照评论数从高到低排序
+    aliveMovies.sort((a, b) => b.reviewCount - a.reviewCount)
+  } else {
+    // ⭐️ 评分排行：按照平均分从高到低排序
+    aliveMovies.sort((a, b) => b.averageScore - a.averageScore)
+  }
+
+  // 2. 映射合同规定的排行榜出货结构
+  const list = aliveMovies.map((m, index) => ({
+    rank: index + 1,
+    movieId: m.id,
+    title: m.title,
+    coverUrl: m.coverUrl,
+    averageScore: m.averageScore,
+    reviewCount: m.reviewCount
+  }))
+
+  return {
+    code: 200,
+    message: '成功',
+    data: list
+  }
+})

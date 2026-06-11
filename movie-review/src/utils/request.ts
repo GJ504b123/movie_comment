@@ -6,10 +6,11 @@ const service = axios.create({
   timeout: 10000,
 })
 
+// src/utils/request.ts 里的请求拦截器小升级
 service.interceptors.request.use(
   (config) => {
-    // 1. 请求发出前：携带 token
-    const token = localStorage.getItem('token')
+    // 💡 智能化摸底：不管是 token 还是 user_token，抓到哪个算哪个！
+    const token = localStorage.getItem('token') || localStorage.getItem('user_token')
     if (token) {
       config.headers = config.headers || {}
       config.headers.Authorization = `Bearer ${token}`
@@ -17,7 +18,6 @@ service.interceptors.request.use(
     return config
   },
   (error) => {
-    // 2. 请求错误做什么
     return Promise.reject(error)
   },
 )

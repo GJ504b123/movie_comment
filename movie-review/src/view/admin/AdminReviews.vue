@@ -154,7 +154,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import request from '../../utils/request'
 
@@ -180,12 +180,15 @@ const fetchReviews = async () => {
     
     const res = await request.get('/admin/reviews', { params })
     if (res.code === 200) {
-      reviews.value = res.data.list
-      total.value = res.data.total
-      totalCount.value = res.data.totalCount || res.data.total
-      visibleCount.value = res.data.visibleCount || 0
-      hiddenCount.value = res.data.hiddenCount || 0
-      totalLikes.value = res.data.totalLikes || 0
+      const responseData = res.data || res
+      reviews.value = responseData.list || []
+      total.value = responseData.total || 0
+      
+      // 💡 大厂级统计容错：如果后端/Mock 没给统计卡片字段，前端根据返回列表自动算出来！
+      totalCount.value = responseData.totalCount || reviews.value.length
+      visibleCount.value = responseData.visibleCount || reviews.value.filter(r => !r.hidden).length
+      hiddenCount.value = responseData.hiddenCount || reviews.value.filter(r => r.hidden).length
+      totalLikes.value = responseData.totalLikes || reviews.value.reduce((sum, r) => sum + (r.likeCount || 0), 0)
     }
   } catch (error) {
     console.error('获取评论列表失败:', error)
@@ -194,19 +197,26 @@ const fetchReviews = async () => {
   }
 }
 
-const toggleVisibility = async (review) => {
+// 🚀 核心修复：纠正取反状态
+const toggleVisibility = async (record) => {
   try {
-    const res = await request.put(`/admin/reviews/${review.id}/hide`, { hidden: !review.hidden })
+    // 🎯 算好准备转变成的最新状态：如果是正常(false)，现在要变成隐藏(true)
+    const nextHiddenStatus = !record.hidden
+    console.log(`🚀 后台正在向合同路口 /admin/reviews/${record.id}/visibility 发射状态汽车, 目标值: ${nextHiddenStatus}`)
+    
+    const res = await request.put(`/admin/reviews/${record.id}/visibility`, {
+      hidden: nextHiddenStatus
+    })
+
     if (res.code === 200) {
-      review.hidden = !review.hidden
-      if (review.hidden) {
-        message.warning(`评论 #${review.id} 已隐藏`)
-      } else {
-        message.success(`评论 #${review.id} 已恢复显示`)
-      }
+      message.success(nextHiddenStatus ? '评论已成功隐藏' : '评论已恢复正常显示')
+      // 🔄 刷新后台表格数据和统计卡片！
+      fetchReviews() 
+    } else {
+      message.error(res.message || '操作失败')
     }
   } catch (error) {
-    console.error('操作失败:', error)
+    console.error('💥 后台切换评论可见性失败:', error)
   }
 }
 
