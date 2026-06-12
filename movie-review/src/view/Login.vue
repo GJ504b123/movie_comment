@@ -83,32 +83,29 @@ const form = reactive({
 })
 
 const handleLogin = async () => {
-  console.log('🔥【触发通知】汶汶按下了登录大炮！当前表单：', { ...form })
-
-  // 兜底补救：防止表单漏风，如果为空直接伪装成超管直接进
-  if (!form.username) form.username = 'wenwen'
-  if (!form.password) form.password = '123456'
+  if (!form.username || !form.password) {
+    message.warning('请输入用户名和密码')
+    return
+  }
 
   loading.value = true
   try {
-    console.log('🚀 Axios 载客汽车发动，顺着网线开往 Mock 大桥...')
     const res = await request.post('/auth/login', { ...form })
-    console.log('🎁 Mock 大桥原路送回了包裹：', res)
 
     if (res && res.code === 200) {
       userStore.setAuth(res.data.token, res.data.user)
-      message.success('验证成功，尊贵的管理员，欢迎回宫！')
-      
+      message.success('登录成功')
+
       if (res.data.user.role === 'admin') {
         router.replace('/admin')
       } else {
         router.replace(route.query.redirect?.toString() || '/')
       }
     } else {
-      message.error(res?.message || '暗号错误，拒绝入境')
+      message.error(res?.message || '登录失败')
     }
   } catch (error) {
-    console.error('💥 汽车在路上抛锚了，请确认 Mock 桥梁通电状态:', error)
+    console.error('登录失败:', error)
   } finally {
     loading.value = false
   }

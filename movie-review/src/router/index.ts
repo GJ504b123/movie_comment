@@ -17,7 +17,6 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    // @ts-ignore  可以加上这个本地不报错
     component: () => import('../view/UserHome.vue'),
   },
   {

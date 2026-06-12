@@ -113,7 +113,7 @@
 
                   <div
                     class="flex items-center gap-1 pt-2 text-xs text-gray-400 cursor-pointer hover:text-purple-600 transition-colors w-fit"
-                    @click="reply.likeCount++"
+                    @click="handleLike(reply)"
                   >
                     👍 <span>{{ reply.likeCount }}</span>
                   </div>
@@ -227,6 +227,10 @@ const submitReview = async () => {
     message.warning('请输入评论内容')
     return
   }
+  if (myRating.value < 0.5) {
+    message.warning('请先打分（至少半颗星）')
+    return
+  }
   submitting.value = true
   const currentId = route.params.id || '201'
 
@@ -260,6 +264,18 @@ const submitReview = async () => {
     submitting.value = false
   }
 }
+// 点赞：POST /reviews/{id}/like（后端为计数模式，点一次 +1）
+const handleLike = async (reply) => {
+  try {
+    const res = await request.post(`/reviews/${reply.id}/like`, { liked: true })
+    if (res.code === 200) {
+      reply.likeCount++
+    }
+  } catch (error) {
+    console.error('点赞失败:', error)
+  }
+}
+
 // 🚀 【严格对齐合同 3.5】：删除自己的评论
 const handleDeleteReview = async (reviewId) => {
   try {

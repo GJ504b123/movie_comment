@@ -1,0 +1,297 @@
+$ bash backend/mvnw -f backend/pom.xml test 2>&1
+[exit 1]
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.movie:movie-comment >-----------------------
+[INFO] Building movie-comment 0.1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ movie-comment ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ movie-comment ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ movie-comment ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ movie-comment ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 3 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ movie-comment ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.movie.comment.InfrastructureTest
+20:25:02.668 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.movie.comment.InfrastructureTest]: InfrastructureTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:25:02.709 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.movie.comment.MovieCommentApplication for test class com.movie.comment.InfrastructureTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-06-01T20:25:02.859+08:00  INFO 78750 --- [           main] com.movie.comment.InfrastructureTest     : Starting InfrastructureTest using Java 17.0.17 with PID 78750 (started by konfer in /Users/konfer/Projects/Web实验/backend)
+2026-06-01T20:25:02.860+08:00 DEBUG 78750 --- [           main] com.movie.comment.InfrastructureTest     : Running with Spring Boot v3.4.3, Spring v6.2.3
+2026-06-01T20:25:02.860+08:00  INFO 78750 --- [           main] com.movie.comment.InfrastructureTest     : No active profile set, falling back to 1 default profile: "default"
+2026-06-01T20:25:03.302+08:00  INFO 78750 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-01T20:25:03.379+08:00  INFO 78750 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:movie_comment user=SA
+2026-06-01T20:25:03.380+08:00  INFO 78750 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-01T20:25:03.398+08:00  INFO 78750 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:movie_comment (H2 2.3)
+2026-06-01T20:25:03.404+08:00  WARN 78750 --- [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+2026-06-01T20:25:03.412+08:00  INFO 78750 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-06-01T20:25:03.413+08:00  INFO 78750 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.005s)
+2026-06-01T20:25:03.416+08:00  INFO 78750 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-06-01T20:25:03.431+08:00  INFO 78750 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-06-01T20:25:03.436+08:00  INFO 78750 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - init tables"
+2026-06-01T20:25:03.447+08:00  INFO 78750 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema "public", now at version v1 (execution time 00:00.005s)
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.9 
+2026-06-01T20:25:03.825+08:00  INFO 78750 --- [           main] com.movie.comment.InfrastructureTest     : Started InfrastructureTest in 1.069 seconds (process running for 1.415)
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-06-01T20:25:04.226+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==>  Preparing: INSERT INTO user ( username, password, email, role, status ) VALUES ( ?, ?, ?, ?, ? )
+2026-06-01T20:25:04.231+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==> Parameters: testuser(String), $2a$10$KImzdt/bl7MwGzFhWXk/J.6E2EmmJ5r.SHo8oHw5PqLpUUO1I0By6(String), test@example.com(String), user(String), pending(String)
+2026-06-01T20:25:04.231+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.UserMapper.insert     : <==    Updates: 1
+2026-06-01T20:25:04.250+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id=?
+2026-06-01T20:25:04.251+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==> Parameters: 1(Long)
+2026-06-01T20:25:04.257+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : <==      Total: 1
+2026-06-01T20:25:04.330+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==>  Preparing: INSERT INTO movie ( title, description, director, release_date, average_score, review_count ) VALUES ( ?, ?, ?, ?, ?, ? )
+2026-06-01T20:25:04.330+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==> Parameters: 测试影片(String), 测试简介(String), 测试导演(String), 2025-01-01(LocalDate), 8.5(BigDecimal), 10(Integer)
+2026-06-01T20:25:04.331+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : <==    Updates: 1
+2026-06-01T20:25:04.334+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE deleted=0
+2026-06-01T20:25:04.334+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : ==> Parameters: 
+2026-06-01T20:25:04.334+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : <==      Total: 1
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.735 s -- in com.movie.comment.InfrastructureTest
+[INFO] Running com.movie.comment.MovieReviewTest
+2026-06-01T20:25:04.342+08:00  INFO 78750 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.movie.comment.MovieReviewTest]: MovieReviewTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-06-01T20:25:04.345+08:00  INFO 78750 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.movie.comment.MovieCommentApplication for test class com.movie.comment.MovieReviewTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-06-01T20:25:04.355+08:00  INFO 78750 --- [           main] com.movie.comment.MovieReviewTest        : Starting MovieReviewTest using Java 17.0.17 with PID 78750 (started by konfer in /Users/konfer/Projects/Web实验/backend)
+2026-06-01T20:25:04.355+08:00 DEBUG 78750 --- [           main] com.movie.comment.MovieReviewTest        : Running with Spring Boot v3.4.3, Spring v6.2.3
+2026-06-01T20:25:04.355+08:00  INFO 78750 --- [           main] com.movie.comment.MovieReviewTest        : No active profile set, falling back to 1 default profile: "default"
+2026-06-01T20:25:04.444+08:00  INFO 78750 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-06-01T20:25:04.445+08:00  INFO 78750 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:movie_comment user=SA
+2026-06-01T20:25:04.445+08:00  INFO 78750 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-06-01T20:25:04.446+08:00  INFO 78750 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:movie_comment (H2 2.3)
+2026-06-01T20:25:04.447+08:00  WARN 78750 --- [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+2026-06-01T20:25:04.448+08:00  INFO 78750 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.001s)
+2026-06-01T20:25:04.449+08:00  INFO 78750 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 1
+2026-06-01T20:25:04.449+08:00  INFO 78750 --- [           main] o.f.core.internal.command.DbMigrate      : Schema "public" is up to date. No migration necessary.
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.9 
+2026-06-01T20:25:04.539+08:00 DEBUG 78750 --- [           main] c.movie.comment.security.JwtAuthFilter   : Filter 'jwtAuthFilter' configured for use
+2026-06-01T20:25:04.540+08:00  INFO 78750 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-06-01T20:25:04.540+08:00  INFO 78750 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-01T20:25:04.540+08:00  INFO 78750 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-06-01T20:25:04.553+08:00  INFO 78750 --- [           main] com.movie.comment.MovieReviewTest        : Started MovieReviewTest in 0.206 seconds (process running for 2.144)
+2026-06-01T20:25:04.612+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==>  Preparing: INSERT INTO user ( username, password, email, role, status ) VALUES ( ?, ?, ?, ?, ? )
+2026-06-01T20:25:04.613+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==> Parameters: mrtest(String), $2a$10$QEL0xhbQhd6UgdECyH1lxuJDIrO3CPpXShVeH35YU4pU4N7dA.mMq(String), mrtest@test.com(String), user(String), approved(String)
+2026-06-01T20:25:04.613+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.UserMapper.insert     : <==    Updates: 1
+2026-06-01T20:25:04.657+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE (username = ?)
+2026-06-01T20:25:04.658+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==> Parameters: mrtest(String)
+2026-06-01T20:25:04.658+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectList       : <==      Total: 1
+2026-06-01T20:25:04.754+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.updateById       : ==>  Preparing: UPDATE user SET username=?, password=?, email=?, role=?, status=?, create_time=?, last_login_time=? WHERE id=?
+2026-06-01T20:25:04.755+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.updateById       : ==> Parameters: mrtest(String), $2a$10$QEL0xhbQhd6UgdECyH1lxuJDIrO3CPpXShVeH35YU4pU4N7dA.mMq(String), mrtest@test.com(String), user(String), approved(String), 2026-06-01T20:25:04.613193(LocalDateTime), 2026-06-01T20:25:04.753342(LocalDateTime), 2(Long)
+2026-06-01T20:25:04.755+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.updateById       : <==    Updates: 1
+2026-06-01T20:25:04.775+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==>  Preparing: INSERT INTO movie ( title, description, director, `cast`, average_score, review_count ) VALUES ( ?, ?, ?, ?, ?, ? )
+2026-06-01T20:25:04.775+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==> Parameters: 测试影片A(String), 这是一部测试影片(String), 测试导演(String), 演员甲, 演员乙(String), 0(BigDecimal), 0(Integer)
+2026-06-01T20:25:04.776+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : <==    Updates: 1
+2026-06-01T20:25:04.781+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==>  Preparing: INSERT INTO movie ( title, description, director, `cast`, average_score, review_count ) VALUES ( ?, ?, ?, ?, ?, ? )
+2026-06-01T20:25:04.781+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==> Parameters: 星际探索者(String), 科幻巨制(String), 诺兰(String), 马修, 安妮(String), 8.5(BigDecimal), 3(Integer)
+2026-06-01T20:25:04.781+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.MovieMapper.insert    : <==    Updates: 1
+2026-06-01T20:25:04.786+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE deleted=0 ORDER BY id DESC
+2026-06-01T20:25:04.786+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : ==> Parameters: 
+2026-06-01T20:25:04.787+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : <==      Total: 3
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/movies
+       Parameters = {}
+          Headers = []
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.movie.comment.controller.MovieController
+           Method = com.movie.comment.controller.MovieController#listMovies(String, int, int, String)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"code":200,"message":"成功","data":{"list":[{"id":3,"title":"星际探索者","coverUrl":null,"averageScore":8.5,"reviewCount":3,"releaseDate":null},{"id":2,"title":"测试影片A","coverUrl":null,"averageScore":0.0,"reviewCount":0,"releaseDate":null},{"id":1,"title":"测试影片","coverUrl":null,"averageScore":8.5,"reviewCount":10,"releaseDate":"2025-01-01"}],"total":0,"page":1,"size":10,"totalPages":0}}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-06-01T20:25:04.797+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE deleted=0 AND ((title LIKE ? OR director LIKE ? OR `cast` LIKE ?)) ORDER BY id DESC
+2026-06-01T20:25:04.798+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : ==> Parameters: %星际%(String), %星际%(String), %星际%(String)
+2026-06-01T20:25:04.799+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : <==      Total: 1
+2026-06-01T20:25:04.803+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE deleted=0 AND ((title LIKE ? OR director LIKE ? OR `cast` LIKE ?)) ORDER BY id DESC
+2026-06-01T20:25:04.803+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : ==> Parameters: %不存在%(String), %不存在%(String), %不存在%(String)
+2026-06-01T20:25:04.803+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectList      : <==      Total: 0
+2026-06-01T20:25:04.806+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-01T20:25:04.806+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 2(Long)
+2026-06-01T20:25:04.806+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-01T20:25:04.807+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE (movie_id = ? AND hidden = ?) ORDER BY create_time DESC
+2026-06-01T20:25:04.808+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==> Parameters: 2(Long), 0(Integer)
+2026-06-01T20:25:04.808+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : <==      Total: 0
+2026-06-01T20:25:04.813+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-01T20:25:04.814+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 99999(Long)
+2026-06-01T20:25:04.814+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 0
+2026-06-01T20:25:04.815+08:00  WARN 78750 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=404 message=影片不存在
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/movies/99999
+       Parameters = {}
+          Headers = []
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.movie.comment.controller.MovieController
+           Method = com.movie.comment.controller.MovieController#getMovieDetail(Long, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = com.movie.comment.common.BusinessException
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 404
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"code":404,"message":"影片不存在","data":null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-06-01T20:25:04.831+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id=?
+2026-06-01T20:25:04.832+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==> Parameters: 2(Long)
+2026-06-01T20:25:04.832+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : <==      Total: 1
+2026-06-01T20:25:04.832+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-01T20:25:04.832+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 2(Long)
+2026-06-01T20:25:04.832+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-01T20:25:04.833+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==>  Preparing: SELECT COUNT( * ) AS total FROM review WHERE (user_id = ? AND movie_id = ?)
+2026-06-01T20:25:04.833+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==> Parameters: 2(Long), 2(Long)
+2026-06-01T20:25:04.834+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : <==      Total: 1
+2026-06-01T20:25:04.835+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.ReviewMapper.insert   : ==>  Preparing: INSERT INTO review ( movie_id, user_id, rating, comment, like_count, hidden ) VALUES ( ?, ?, ?, ?, ?, ? )
+2026-06-01T20:25:04.835+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.ReviewMapper.insert   : ==> Parameters: 2(Long), 2(Long), 8(Integer), 还不错(String), 0(Integer), 0(Integer)
+2026-06-01T20:25:04.835+08:00 DEBUG 78750 --- [           main] c.m.comment.mapper.ReviewMapper.insert   : <==    Updates: 1
+2026-06-01T20:25:04.836+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE (movie_id = ? AND hidden = ?)
+2026-06-01T20:25:04.836+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==> Parameters: 2(Long), 0(Integer)
+2026-06-01T20:25:04.836+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : <==      Total: 1
+2026-06-01T20:25:04.836+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-01T20:25:04.836+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 2(Long)
+2026-06-01T20:25:04.836+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-01T20:25:04.838+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==>  Preparing: UPDATE movie SET title=?, description=?, director=?, `cast`=?, average_score=?, review_count=?, create_time=? WHERE id=? AND deleted=0
+2026-06-01T20:25:04.838+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==> Parameters: 测试影片A(String), 这是一部测试影片(String), 测试导演(String), 演员甲, 演员乙(String), 8.0(BigDecimal), 1(Integer), 2026-06-01T20:25:04.775905(LocalDateTime), 2(Long)
+2026-06-01T20:25:04.838+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.updateById      : <==    Updates: 1
+2026-06-01T20:25:04.841+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-01T20:25:04.841+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 2(Long)
+2026-06-01T20:25:04.842+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-01T20:25:04.842+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE (movie_id = ? AND hidden = ?) ORDER BY create_time DESC
+2026-06-01T20:25:04.842+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==> Parameters: 2(Long), 0(Integer)
+2026-06-01T20:25:04.843+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : <==      Total: 1
+2026-06-01T20:25:04.844+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id IN ( ? )
+2026-06-01T20:25:04.844+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : ==> Parameters: 2(Long)
+2026-06-01T20:25:04.844+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : <==      Total: 1
+2026-06-01T20:25:04.848+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id=?
+2026-06-01T20:25:04.848+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==> Parameters: 2(Long)
+2026-06-01T20:25:04.848+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.UserMapper.selectById       : <==      Total: 1
+2026-06-01T20:25:04.849+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-01T20:25:04.849+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 2(Long)
+2026-06-01T20:25:04.849+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-01T20:25:04.849+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==>  Preparing: SELECT COUNT( * ) AS total FROM review WHERE (user_id = ? AND movie_id = ?)
+2026-06-01T20:25:04.849+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==> Parameters: 2(Long), 2(Long)
+2026-06-01T20:25:04.849+08:00 DEBUG 78750 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : <==      Total: 1
+2026-06-01T20:25:04.850+08:00  WARN 78750 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=409 message=您已经评论过这部电影，不能重复评论
+2026-06-01T20:25:04.853+08:00  WARN 78750 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=401 message=未提供认证凭证
+2026-06-01T20:25:04.857+08:00 ERROR 78750 --- [           main] c.m.c.common.GlobalExceptionHandler      : 未预期异常
+
+org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Method parameter 'reviewId': Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; For input string: "null"
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.convertIfNecessary(AbstractNamedValueMethodArgumentResolver.java:301) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:136) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:226) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:180) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.web.servlet.FrameworkServlet.doPut(FrameworkServlet.java:925) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:593) ~[tomcat-embed-core-10.1.36.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.3.jar:6.2.3]
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72) ~[spring-test-6.2.3.jar:6.2.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.36.jar:6.0]
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165) ~[spring-test-6.2.3.jar:6.2.3]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.3.jar:6.2.3]
+	at com.movie.comment.security.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:74) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.3.jar:6.2.3]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.3.jar:6.2.3]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.3.jar:6.2.3]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132) ~[spring-test-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.3.jar:6.2.3]
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162) ~[spring-test-6.2.3.jar:6.2.3]
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterC
+
+[… truncated 44612 chars …]

@@ -128,6 +128,22 @@ public class AdminController {
     //  2.6 影评列表（管理视图）
     // ========================================
 
+    @Operation(summary = "管理端影片列表", description = "返回全量影片（含已软删除影片，deleted=true 标记），供后台留痕展示与编辑回填")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "分页影片列表"),
+            @ApiResponse(responseCode = "401", description = "未登录"),
+            @ApiResponse(responseCode = "403", description = "非管理员")
+    })
+    @GetMapping("/movies")
+    public Result<PageResult<AdminMovieVO>> getMovies(
+            @Parameter(description = "搜索关键词，模糊匹配标题/导演/主演（可选）") @RequestParam(required = false) String keyword,
+            @Parameter(description = "排序：rating / releaseDate，默认按 ID 倒序") @RequestParam(required = false) String sort,
+            @Parameter(description = "页码") @RequestParam(defaultValue = "1") int page,
+            @Parameter(description = "每页条数") @RequestParam(defaultValue = "10") int size) {
+        requireAdmin();
+        return Result.ok(adminService.getMoviesForAdmin(keyword, sort, page, size));
+    }
+
     @Operation(summary = "2.6 获取所有影评（管理视图）", description = "支持按影片、用户、隐藏状态过滤")
     @ApiResponse(responseCode = "200", description = "分页影评列表")
     @GetMapping("/reviews")

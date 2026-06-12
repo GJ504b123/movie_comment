@@ -15,7 +15,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -159,6 +161,22 @@ public class AdminServiceImpl implements AdminService {
     }
 
     // ========================================
+    //  管理端影片列表（含已删留痕）
+    // ========================================
+
+    @Override
+    public PageResult<AdminMovieVO> getMoviesForAdmin(String keyword, String sort, int page, int size) {
+        long total = movieMapper.countAllForAdmin(keyword);
+
+        int offset = (page - 1) * size;
+        List<AdminMovieVO> list = movieMapper.selectPageForAdmin(keyword, sort, size, offset).stream()
+                .map(AdminMovieVO::from)
+                .collect(Collectors.toList());
+
+        return new PageResult<>(list, total, page, size);
+    }
+
+    // ========================================
     //  2.6 影评列表（管理视图）
     // ========================================
 
@@ -193,13 +211,13 @@ public class AdminServiceImpl implements AdminService {
 
         List<Review> reviews = reviewMapper.selectList(listWrapper);
 
-        // 批量查影片标题
+        // 批量查影片标题（含已软删除影片，避免后台显示"未知影片"）
         Set<Long> movieIds = reviews.stream()
                 .map(Review::getMovieId)
                 .collect(Collectors.toSet());
         Map<Long, String> movieTitleMap = new HashMap<>();
         if (!movieIds.isEmpty()) {
-            List<Movie> movies = movieMapper.selectBatchIds(movieIds);
+            List<Movie> movies = movieMapper.selectByIdsIncludeDeleted(movieIds);
             for (Movie m : movies) {
                 movieTitleMap.put(m.getId(), m.getTitle());
             }
@@ -261,10 +279,10 @@ public class AdminServiceImpl implements AdminService {
             countWrapper.eq(AccessLog::getAction, action);
         }
         if (startTime != null && !startTime.isBlank()) {
-            countWrapper.ge(AccessLog::getCreateTime, LocalDateTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            countWrapper.ge(AccessLog::getCreateTime, parseFlexibleTime(startTime, true));
         }
         if (endTime != null && !endTime.isBlank()) {
-            countWrapper.le(AccessLog::getCreateTime, LocalDateTime.parse(endTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            countWrapper.le(AccessLog::getCreateTime, parseFlexibleTime(endTime, false));
         }
         long total = accessLogMapper.selectCount(countWrapper);
 
@@ -276,10 +294,10 @@ public class AdminServiceImpl implements AdminService {
             listWrapper.eq(AccessLog::getAction, action);
         }
         if (startTime != null && !startTime.isBlank()) {
-            listWrapper.ge(AccessLog::getCreateTime, LocalDateTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            listWrapper.ge(AccessLog::getCreateTime, parseFlexibleTime(startTime, true));
         }
         if (endTime != null && !endTime.isBlank()) {
-            listWrapper.le(AccessLog::getCreateTime, LocalDateTime.parse(endTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            listWrapper.le(AccessLog::getCreateTime, parseFlexibleTime(endTime, false));
         }
         listWrapper.orderByDesc(AccessLog::getCreateTime);
         int offset = (page - 1) * size;
@@ -290,6 +308,26 @@ public class AdminServiceImpl implements AdminService {
                 .collect(Collectors.toList());
 
         return new PageResult<>(list, total, page, size);
+    }
+
+    /**
+     * 宽容解析时间参数，避免格式稍有出入就 500：
+     * 支持 2026-06-11T10:00:00（ISO 本地时间）、2026-06-11T10:00:00Z / +08:00（带时区，转为本地时间）、
+     * 2026-06-11（纯日期，start 取当天 00:00:00，end 取当天 23:59:59）。
+     */
+    private LocalDateTime parseFlexibleTime(String text, boolean isStart) {
+        try {
+            return LocalDateTime.parse(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        } catch (DateTimeParseException ignored) { /* 继续尝试其他格式 */ }
+        try {
+            return OffsetDateTime.parse(text).toLocalDateTime();
+        } catch (DateTimeParseException ignored) { /* 继续尝试其他格式 */ }
+        try {
+            LocalDate d = LocalDate.parse(text, DateTimeFormatter.ISO_LOCAL_DATE);
+            return isStart ? d.atStartOfDay() : d.atTime(23, 59, 59);
+        } catch (DateTimeParseException e) {
+            throw new BusinessException(400, "时间格式不正确，请使用 yyyy-MM-dd 或 yyyy-MM-ddTHH:mm:ss");
+        }
     }
 
     // ========================================

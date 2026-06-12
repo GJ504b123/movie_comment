@@ -68,24 +68,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import MovieCard from '../components/MovieCard.vue'
 import NavBar from '../components/NavBar.vue'
 import request from '../utils/request'
 import { useUserStore } from '../stores/user'
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
 
 const movies = ref([])
 const loading = ref(true)
-const keyword = ref('')
+// 支持从其他页面（如排行榜搜索框）通过 ?keyword= 跳转过来直接出搜索结果
+const keyword = ref(route.query.keyword?.toString() || '')
 
 const fetchMovies = async () => {
   loading.value = true
   try {
-    const params = { page: 1, size: 20, sortBy: 'rating' }
+    // 后端 GET /movies 的排序参数名是 sort（rating / releaseDate）
+    const params = { page: 1, size: 20, sort: 'rating' }
     if (keyword.value) params.keyword = keyword.value
     const res = await request.get('/movies', { params })
     if (res.code === 200) {
@@ -102,6 +105,12 @@ const handleSearch = (value) => {
   keyword.value = value || ''
   fetchMovies()
 }
+
+// 路由 query 变化时（如在排行榜再次搜索）同步刷新
+watch(() => route.query.keyword, (val) => {
+  keyword.value = val?.toString() || ''
+  fetchMovies()
+})
 
 onMounted(() => {
   fetchMovies()

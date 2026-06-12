@@ -86,7 +86,7 @@
         <a-skeleton active :paragraph="{ rows: 4 }" />
       </div>
 
-      <div v-else-if="reviews.length === 0" class="p-12 text-center">
+      <div v-else-if="displayReviews.length === 0" class="p-12 text-center">
         <span class="text-4xl">📭</span>
         <p class="text-gray-500 mt-4 font-bold">暂无评论</p>
         <p class="text-xs text-gray-400">用户还没有发表任何影评</p>
@@ -94,7 +94,7 @@
 
       <div v-else>
         <div
-          v-for="review in reviews"
+          v-for="review in displayReviews"
           :key="review.id"
           :class="review.hidden ? 'bg-gray-100' : ''"
           class="border-b border-gray-50 px-6 py-4 hover:bg-purple-50/30 transition-colors"
@@ -171,13 +171,21 @@ const visibleCount = ref(0)
 const hiddenCount = ref(0)
 const totalLikes = ref(0)
 
+// 关键词在当前页内即时过滤（影片名 / 用户名）——后端 2.6 不支持 keyword 参数
+const displayReviews = computed(() => {
+  const kw = searchKeyword.value.trim()
+  if (!kw) return reviews.value
+  return reviews.value.filter(
+    (r) => (r.movieTitle || '').includes(kw) || (r.username || '').includes(kw)
+  )
+})
+
 const fetchReviews = async () => {
   loading.value = true
   try {
     const params = { page: page.value, size: size.value }
-    if (searchKeyword.value) params.keyword = searchKeyword.value
     if (filterHidden.value !== null) params.hidden = filterHidden.value
-    
+
     const res = await request.get('/admin/reviews', { params })
     if (res.code === 200) {
       const responseData = res.data || res

@@ -59,7 +59,7 @@ public class ReviewController {
     @PutMapping("/reviews/{reviewId}")
     public Result<Void> updateReview(
             @Parameter(description = "评论 ID") @PathVariable Long reviewId,
-            @RequestBody UpdateReviewRequest req) {
+            @Valid @RequestBody UpdateReviewRequest req) {
         Long userId = requireLogin();
         reviewService.updateReview(reviewId, userId, req.getRating(), req.getComment());
         return Result.ok("修改成功", null);

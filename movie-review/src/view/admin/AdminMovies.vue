@@ -173,13 +173,12 @@ const formData = ref({
   description: ''
 })
 
-// 🚀 覆盖全面拉取接口
+// 🚀 后台专用列表：GET /admin/movies 返回全量影片（含已下架 deleted=true 的留痕数据）
 const fetchMovies = async () => {
   loading.value = true
   try {
-    // 💡 后台大楼特殊福利：我们直接调用包含全部历史货架的 Mock 接口
-    const res = await request.get('/movies', {
-      params: { page: page.value, size: size.value, keyword: searchKeyword.value, sortBy: sortBy.value }
+    const res = await request.get('/admin/movies', {
+      params: { page: page.value, size: size.value, keyword: searchKeyword.value, sort: sortBy.value }
     })
     if (res.code === 200) {
       // 💡 大厂级兼容：由于前端后台要调试“已下架”留痕状态，我们这里直接接收全量列表
@@ -234,7 +233,12 @@ const handleSubmit = async () => {
     message.error('请填写必填字段')
     return
   }
-  
+  // 后端按 yyyy-MM-dd 严格解析上映日期，提交前先校验格式
+  if (formData.value.releaseDate && !/^\d{4}-\d{2}-\d{2}$/.test(formData.value.releaseDate)) {
+    message.error('上映日期格式应为 yyyy-MM-dd，例如 1994-09-23')
+    return
+  }
+
   const payload = {
     title: formData.value.title,
     director: formData.value.director,

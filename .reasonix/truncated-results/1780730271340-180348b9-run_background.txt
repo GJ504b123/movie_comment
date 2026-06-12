@@ -1,0 +1,326 @@
+[job 3 exited during startup · exit 1]
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.movie:movie-comment >-----------------------
+[INFO] Building movie-comment 0.1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ movie-comment ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ movie-comment ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ movie-comment ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ movie-comment ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ movie-comment ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.movie.comment.AdminTest
+15:17:49.373 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.movie.comment.AdminTest]: AdminTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:17:49.411 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.movie.comment.MovieCommentApplication for test class com.movie.comment.AdminTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-06-06T15:17:49.540+08:00  INFO 36143 --- [           main] com.movie.comment.AdminTest              : Starting AdminTest using Java 17.0.17 with PID 36143 (started by konfer in /Users/konfer/Projects/Web实验/backend)
+2026-06-06T15:17:49.540+08:00 DEBUG 36143 --- [           main] com.movie.comment.AdminTest              : Running with Spring Boot v3.4.3, Spring v6.2.3
+2026-06-06T15:17:49.540+08:00  INFO 36143 --- [           main] com.movie.comment.AdminTest              : No active profile set, falling back to 1 default profile: "default"
+2026-06-06T15:17:49.927+08:00  INFO 36143 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-06T15:17:49.999+08:00  INFO 36143 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:movie_comment user=SA
+2026-06-06T15:17:49.999+08:00  INFO 36143 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-06T15:17:50.016+08:00  INFO 36143 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:movie_comment (H2 2.3)
+2026-06-06T15:17:50.021+08:00  WARN 36143 --- [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: H2 2.3.232 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.224.
+2026-06-06T15:17:50.028+08:00  INFO 36143 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-06-06T15:17:50.029+08:00  INFO 36143 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.004s)
+2026-06-06T15:17:50.031+08:00  INFO 36143 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-06-06T15:17:50.046+08:00  INFO 36143 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-06-06T15:17:50.051+08:00  INFO 36143 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - init tables"
+2026-06-06T15:17:50.061+08:00  INFO 36143 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema "public", now at version v1 (execution time 00:00.005s)
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.9 
+2026-06-06T15:17:50.378+08:00 DEBUG 36143 --- [           main] c.movie.comment.security.JwtAuthFilter   : Filter 'jwtAuthFilter' configured for use
+2026-06-06T15:17:50.378+08:00  INFO 36143 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-06-06T15:17:50.378+08:00  INFO 36143 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-06T15:17:50.379+08:00  INFO 36143 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-06-06T15:17:50.390+08:00  INFO 36143 --- [           main] com.movie.comment.AdminTest              : Started AdminTest in 0.938 seconds (process running for 1.234)
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-06-06T15:17:50.759+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==>  Preparing: INSERT INTO user ( username, password, email, role, status ) VALUES ( ?, ?, ?, ?, ? )
+2026-06-06T15:17:50.764+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==> Parameters: admin(String), $2a$10$uXSPiYPXkPYn8m0q9q/ahuiudkv52XwUrzw8lbz5wMCPkmrg9kQ2q(String), admin@test.com(String), admin(String), approved(String)
+2026-06-06T15:17:50.765+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : <==    Updates: 1
+2026-06-06T15:17:50.805+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE (username = ?)
+2026-06-06T15:17:50.806+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==> Parameters: admin(String)
+2026-06-06T15:17:50.814+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : <==      Total: 1
+2026-06-06T15:17:50.904+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : ==>  Preparing: UPDATE user SET username=?, password=?, email=?, role=?, status=?, create_time=?, last_login_time=? WHERE id=?
+2026-06-06T15:17:50.905+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : ==> Parameters: admin(String), $2a$10$uXSPiYPXkPYn8m0q9q/ahuiudkv52XwUrzw8lbz5wMCPkmrg9kQ2q(String), admin@test.com(String), admin(String), approved(String), 2026-06-06T15:17:50.764761(LocalDateTime), 2026-06-06T15:17:50.903279(LocalDateTime), 1(Long)
+2026-06-06T15:17:50.905+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : <==    Updates: 1
+2026-06-06T15:17:50.988+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==>  Preparing: INSERT INTO user ( username, password, email, role, status ) VALUES ( ?, ?, ?, ?, ? )
+2026-06-06T15:17:50.988+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==> Parameters: normaluser(String), $2a$10$PbU1.C2dXyeTUSfK7FSekOQ6TtDn3p3AUb5BR3chpNyGritvzqQeK(String), normal@test.com(String), user(String), approved(String)
+2026-06-06T15:17:50.988+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : <==    Updates: 1
+2026-06-06T15:17:50.989+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE (username = ?)
+2026-06-06T15:17:50.990+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==> Parameters: normaluser(String)
+2026-06-06T15:17:50.990+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : <==      Total: 1
+2026-06-06T15:17:51.042+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : ==>  Preparing: UPDATE user SET username=?, password=?, email=?, role=?, status=?, create_time=?, last_login_time=? WHERE id=?
+2026-06-06T15:17:51.042+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : ==> Parameters: normaluser(String), $2a$10$PbU1.C2dXyeTUSfK7FSekOQ6TtDn3p3AUb5BR3chpNyGritvzqQeK(String), normal@test.com(String), user(String), approved(String), 2026-06-06T15:17:50.988633(LocalDateTime), 2026-06-06T15:17:51.042543(LocalDateTime), 2(Long)
+2026-06-06T15:17:51.043+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : <==    Updates: 1
+2026-06-06T15:17:51.095+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==>  Preparing: INSERT INTO user ( username, password, email, role, status ) VALUES ( ?, ?, ?, ?, ? )
+2026-06-06T15:17:51.095+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==> Parameters: pendinguser(String), $2a$10$hwqp/LK5E65xb2/sLp7JS.p31/Lh1pWXTvIJbCB8SlMgmTx4ewl3W(String), pending@test.com(String), user(String), pending(String)
+2026-06-06T15:17:51.096+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : <==    Updates: 1
+2026-06-06T15:17:51.096+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==>  Preparing: INSERT INTO movie ( title, description, director, `cast`, average_score, review_count ) VALUES ( ?, ?, ?, ?, ?, ? )
+2026-06-06T15:17:51.096+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==> Parameters: 测试影片(String), 一部测试用影片(String), 测试导演(String), 演员甲, 演员乙(String), 0(BigDecimal), 0(Integer)
+2026-06-06T15:17:51.097+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : <==    Updates: 1
+2026-06-06T15:17:51.097+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.ReviewMapper.insert   : ==>  Preparing: INSERT INTO review ( movie_id, user_id, rating, comment, like_count, hidden ) VALUES ( ?, ?, ?, ?, ?, ? )
+2026-06-06T15:17:51.097+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.ReviewMapper.insert   : ==> Parameters: 1(Long), 2(Long), 8(Integer), 不错(String), 0(Integer), 0(Integer)
+2026-06-06T15:17:51.098+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.ReviewMapper.insert   : <==    Updates: 1
+2026-06-06T15:17:51.112+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=403 message=需要管理员权限
+2026-06-06T15:17:51.117+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=403 message=需要管理员权限
+2026-06-06T15:17:51.120+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=403 message=需要管理员权限
+2026-06-06T15:17:51.122+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=401 message=未提供认证凭证
+2026-06-06T15:17:51.125+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectCount      : ==>  Preparing: SELECT COUNT( * ) AS total FROM user WHERE (status = ?)
+2026-06-06T15:17:51.125+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectCount      : ==> Parameters: pending(String)
+2026-06-06T15:17:51.125+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectCount      : <==      Total: 1
+2026-06-06T15:17:51.126+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE (status = ?) ORDER BY create_time DESC LIMIT 10 OFFSET 0
+2026-06-06T15:17:51.126+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==> Parameters: pending(String)
+2026-06-06T15:17:51.126+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : <==      Total: 1
+2026-06-06T15:17:51.132+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectCount      : ==>  Preparing: SELECT COUNT( * ) AS total FROM user WHERE (status = ?)
+2026-06-06T15:17:51.132+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectCount      : ==> Parameters: pending(String)
+2026-06-06T15:17:51.132+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectCount      : <==      Total: 1
+2026-06-06T15:17:51.132+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE (status = ?) ORDER BY create_time DESC LIMIT 5 OFFSET 0
+2026-06-06T15:17:51.132+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : ==> Parameters: pending(String)
+2026-06-06T15:17:51.133+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectList       : <==      Total: 1
+2026-06-06T15:17:51.135+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id=?
+2026-06-06T15:17:51.136+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==> Parameters: 3(Long)
+2026-06-06T15:17:51.136+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : <==      Total: 1
+2026-06-06T15:17:51.136+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : ==>  Preparing: UPDATE user SET username=?, password=?, email=?, role=?, status=?, create_time=? WHERE id=?
+2026-06-06T15:17:51.136+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : ==> Parameters: pendinguser(String), $2a$10$hwqp/LK5E65xb2/sLp7JS.p31/Lh1pWXTvIJbCB8SlMgmTx4ewl3W(String), pending@test.com(String), user(String), approved(String), 2026-06-06T15:17:51.095962(LocalDateTime), 3(Long)
+2026-06-06T15:17:51.136+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.updateById       : <==    Updates: 1
+2026-06-06T15:17:51.137+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id=?
+2026-06-06T15:17:51.137+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==> Parameters: 3(Long)
+2026-06-06T15:17:51.138+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : <==      Total: 1
+2026-06-06T15:17:51.140+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id=?
+2026-06-06T15:17:51.140+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==> Parameters: 3(Long)
+2026-06-06T15:17:51.140+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : <==      Total: 1
+2026-06-06T15:17:51.141+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=400 message=该用户不是待审核状态
+2026-06-06T15:17:51.143+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id=?
+2026-06-06T15:17:51.143+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==> Parameters: 99999(Long)
+2026-06-06T15:17:51.143+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : <==      Total: 0
+2026-06-06T15:17:51.144+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=404 message=用户不存在
+2026-06-06T15:17:51.199+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==>  Preparing: INSERT INTO user ( username, password, email, role, status ) VALUES ( ?, ?, ?, ?, ? )
+2026-06-06T15:17:51.199+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : ==> Parameters: pending2(String), $2a$10$Y2qfSVci4IoHSxLCCvEbceZGjaBWYte6Q/ojMeTmdLM0Y/Nfu7zde(String), p2@test.com(String), user(String), pending(String)
+2026-06-06T15:17:51.199+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.UserMapper.insert     : <==    Updates: 1
+2026-06-06T15:17:51.200+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id=?
+2026-06-06T15:17:51.201+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : ==> Parameters: 4(Long)
+2026-06-06T15:17:51.201+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectById       : <==      Total: 1
+2026-06-06T15:17:51.201+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=400 message=action 必须为 approve 或 reject
+2026-06-06T15:17:51.205+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==>  Preparing: INSERT INTO movie ( title, description, director, `cast`, release_date, cover_url, average_score, review_count ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )
+2026-06-06T15:17:51.205+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==> Parameters: 肖申克的救赎(String), 一部关于希望的电影(String), 弗兰克·德拉邦特(String), 蒂姆·罗宾斯, 摩根·弗里曼(String), 1994-09-23(LocalDate), https://example.com/shawshank.jpg(String), 0(BigDecimal), 0(Integer)
+2026-06-06T15:17:51.205+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : <==    Updates: 1
+2026-06-06T15:17:51.208+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.208+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 2(Long)
+2026-06-06T15:17:51.208+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-06T15:17:51.212+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.212+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.212+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-06T15:17:51.213+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==>  Preparing: UPDATE movie SET title=?, description=?, director=?, `cast`=?, average_score=?, review_count=?, create_time=? WHERE id=? AND deleted=0
+2026-06-06T15:17:51.213+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==> Parameters: 修改后的标题(String), 修改后的描述(String), 测试导演(String), 演员甲, 演员乙(String), 0.0(BigDecimal), 0(Integer), 2026-06-06T15:17:51.096965(LocalDateTime), 1(Long)
+2026-06-06T15:17:51.214+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : <==    Updates: 1
+2026-06-06T15:17:51.214+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.214+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.214+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-06T15:17:51.217+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.217+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 99999(Long)
+2026-06-06T15:17:51.217+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 0
+2026-06-06T15:17:51.217+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=404 message=影片不存在
+2026-06-06T15:17:51.219+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.219+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 99999(Long)
+2026-06-06T15:17:51.220+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 0
+2026-06-06T15:17:51.220+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=404 message=影片不存在
+2026-06-06T15:17:51.223+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==>  Preparing: SELECT COUNT( * ) AS total FROM review
+2026-06-06T15:17:51.223+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==> Parameters: 
+2026-06-06T15:17:51.223+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : <==      Total: 1
+2026-06-06T15:17:51.223+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review ORDER BY create_time DESC LIMIT 10 OFFSET 0
+2026-06-06T15:17:51.223+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==> Parameters: 
+2026-06-06T15:17:51.224+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : <==      Total: 1
+2026-06-06T15:17:51.224+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectByIds     : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id IN ( ? ) AND deleted=0
+2026-06-06T15:17:51.224+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectByIds     : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.225+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectByIds     : <==      Total: 1
+2026-06-06T15:17:51.225+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id IN ( ? )
+2026-06-06T15:17:51.225+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : ==> Parameters: 2(Long)
+2026-06-06T15:17:51.225+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : <==      Total: 1
+2026-06-06T15:17:51.228+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==>  Preparing: SELECT COUNT( * ) AS total FROM review WHERE (movie_id = ?)
+2026-06-06T15:17:51.229+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.229+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : <==      Total: 1
+2026-06-06T15:17:51.229+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE (movie_id = ?) ORDER BY create_time DESC LIMIT 10 OFFSET 0
+2026-06-06T15:17:51.229+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.229+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : <==      Total: 1
+2026-06-06T15:17:51.229+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectByIds     : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id IN ( ? ) AND deleted=0
+2026-06-06T15:17:51.230+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectByIds     : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.230+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectByIds     : <==      Total: 1
+2026-06-06T15:17:51.230+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : ==>  Preparing: SELECT id,username,password,email,role,status,create_time,last_login_time FROM user WHERE id IN ( ? )
+2026-06-06T15:17:51.230+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : ==> Parameters: 2(Long)
+2026-06-06T15:17:51.230+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.UserMapper.selectByIds      : <==      Total: 1
+2026-06-06T15:17:51.232+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==>  Preparing: SELECT COUNT( * ) AS total FROM review WHERE (hidden = ?)
+2026-06-06T15:17:51.233+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : ==> Parameters: 1(Integer)
+2026-06-06T15:17:51.233+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectCount    : <==      Total: 1
+2026-06-06T15:17:51.233+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE (hidden = ?) ORDER BY create_time DESC LIMIT 10 OFFSET 0
+2026-06-06T15:17:51.233+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==> Parameters: 1(Integer)
+2026-06-06T15:17:51.233+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : <==      Total: 0
+2026-06-06T15:17:51.236+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE id=?
+2026-06-06T15:17:51.236+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.236+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : <==      Total: 1
+2026-06-06T15:17:51.237+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.updateById     : ==>  Preparing: UPDATE review SET movie_id=?, user_id=?, rating=?, comment=?, like_count=?, hidden=?, create_time=? WHERE id=?
+2026-06-06T15:17:51.237+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.updateById     : ==> Parameters: 1(Long), 2(Long), 8(Integer), 不错(String), 0(Integer), 1(Integer), 2026-06-06T15:17:51.097888(LocalDateTime), 1(Long)
+2026-06-06T15:17:51.237+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.updateById     : <==    Updates: 1
+2026-06-06T15:17:51.237+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE (movie_id = ? AND hidden = ?)
+2026-06-06T15:17:51.238+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==> Parameters: 1(Long), 0(Integer)
+2026-06-06T15:17:51.238+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : <==      Total: 0
+2026-06-06T15:17:51.238+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.238+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.238+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-06T15:17:51.238+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==>  Preparing: UPDATE movie SET title=?, description=?, director=?, `cast`=?, average_score=?, review_count=?, create_time=? WHERE id=? AND deleted=0
+2026-06-06T15:17:51.238+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==> Parameters: 修改后的标题(String), 修改后的描述(String), 测试导演(String), 演员甲, 演员乙(String), 0(BigDecimal), 0(Integer), 2026-06-06T15:17:51.096965(LocalDateTime), 1(Long)
+2026-06-06T15:17:51.239+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : <==    Updates: 1
+2026-06-06T15:17:51.239+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE id=?
+2026-06-06T15:17:51.239+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.239+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : <==      Total: 1
+2026-06-06T15:17:51.239+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.239+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.240+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-06T15:17:51.242+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE id=?
+2026-06-06T15:17:51.242+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.242+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : <==      Total: 1
+2026-06-06T15:17:51.242+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.updateById     : ==>  Preparing: UPDATE review SET movie_id=?, user_id=?, rating=?, comment=?, like_count=?, hidden=?, create_time=? WHERE id=?
+2026-06-06T15:17:51.242+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.updateById     : ==> Parameters: 1(Long), 2(Long), 8(Integer), 不错(String), 0(Integer), 0(Integer), 2026-06-06T15:17:51.097888(LocalDateTime), 1(Long)
+2026-06-06T15:17:51.242+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.updateById     : <==    Updates: 1
+2026-06-06T15:17:51.243+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE (movie_id = ? AND hidden = ?)
+2026-06-06T15:17:51.243+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : ==> Parameters: 1(Long), 0(Integer)
+2026-06-06T15:17:51.243+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectList     : <==      Total: 1
+2026-06-06T15:17:51.243+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.243+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.243+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-06T15:17:51.244+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==>  Preparing: UPDATE movie SET title=?, description=?, director=?, `cast`=?, average_score=?, review_count=?, create_time=? WHERE id=? AND deleted=0
+2026-06-06T15:17:51.244+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==> Parameters: 修改后的标题(String), 修改后的描述(String), 测试导演(String), 演员甲, 演员乙(String), 8.0(BigDecimal), 1(Integer), 2026-06-06T15:17:51.096965(LocalDateTime), 1(Long)
+2026-06-06T15:17:51.244+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : <==    Updates: 1
+2026-06-06T15:17:51.244+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.245+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 1(Long)
+2026-06-06T15:17:51.245+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-06T15:17:51.247+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : ==>  Preparing: SELECT id,movie_id,user_id,rating,comment,like_count,hidden,create_time FROM review WHERE id=?
+2026-06-06T15:17:51.247+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : ==> Parameters: 99999(Long)
+2026-06-06T15:17:51.247+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.ReviewMapper.selectById     : <==      Total: 0
+2026-06-06T15:17:51.247+08:00  WARN 36143 --- [           main] c.m.c.common.GlobalExceptionHandler      : 业务异常: code=404 message=评论不存在
+2026-06-06T15:17:51.249+08:00 DEBUG 36143 --- [           main] c.m.c.m.AccessLogMapper.selectCount      : ==>  Preparing: SELECT COUNT( * ) AS total FROM access_log
+2026-06-06T15:17:51.249+08:00 DEBUG 36143 --- [           main] c.m.c.m.AccessLogMapper.selectCount      : ==> Parameters: 
+2026-06-06T15:17:51.250+08:00 DEBUG 36143 --- [           main] c.m.c.m.AccessLogMapper.selectCount      : <==      Total: 1
+2026-06-06T15:17:51.250+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.AccessLogMapper.selectList  : ==>  Preparing: SELECT id,user_id,username,action,target_id,ip,user_agent,create_time FROM access_log ORDER BY create_time DESC LIMIT 20 OFFSET 0
+2026-06-06T15:17:51.250+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.AccessLogMapper.selectList  : ==> Parameters: 
+2026-06-06T15:17:51.250+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.AccessLogMapper.selectList  : <==      Total: 0
+2026-06-06T15:17:51.253+08:00 DEBUG 36143 --- [           main] c.m.c.m.AccessLogMapper.selectCount      : ==>  Preparing: SELECT COUNT( * ) AS total FROM access_log WHERE (action = ?)
+2026-06-06T15:17:51.253+08:00 DEBUG 36143 --- [           main] c.m.c.m.AccessLogMapper.selectCount      : ==> Parameters: login(String)
+2026-06-06T15:17:51.253+08:00 DEBUG 36143 --- [           main] c.m.c.m.AccessLogMapper.selectCount      : <==      Total: 1
+2026-06-06T15:17:51.254+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.AccessLogMapper.selectList  : ==>  Preparing: SELECT id,user_id,username,action,target_id,ip,user_agent,create_time FROM access_log WHERE (action = ?) ORDER BY create_time DESC LIMIT 10 OFFSET 0
+2026-06-06T15:17:51.254+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.AccessLogMapper.selectList  : ==> Parameters: login(String)
+2026-06-06T15:17:51.254+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.AccessLogMapper.selectList  : <==      Total: 0
+2026-06-06T15:17:51.256+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==>  Preparing: INSERT INTO movie ( title, description, director, `cast`, average_score, review_count ) VALUES ( ?, ?, ?, ?, ?, ? )
+2026-06-06T15:17:51.256+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : ==> Parameters: 待删除影片(String), 将被软删除(String), 无名(String), 无(String), 0(BigDecimal), 0(Integer)
+2026-06-06T15:17:51.256+08:00 DEBUG 36143 --- [           main] c.m.comment.mapper.MovieMapper.insert    : <==    Updates: 1
+2026-06-06T15:17:51.257+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.257+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 3(Long)
+2026-06-06T15:17:51.257+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+2026-06-06T15:17:51.257+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==>  Preparing: UPDATE movie SET title=?, description=?, director=?, `cast`=?, average_score=?, review_count=?, create_time=? WHERE id=? AND deleted=0
+2026-06-06T15:17:51.258+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : ==> Parameters: 待删除影片(String), 将被软删除(String), 无名(String), 无(String), 0.0(BigDecimal), 0(Integer), 2026-06-06T15:17:51.256379(LocalDateTime), 3(Long)
+2026-06-06T15:17:51.258+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.updateById      : <==    Updates: 1
+2026-06-06T15:17:51.258+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==>  Preparing: SELECT id,title,description,director,`cast`,release_date,cover_url,average_score,review_count,deleted,create_time FROM movie WHERE id=? AND deleted=0
+2026-06-06T15:17:51.258+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : ==> Parameters: 3(Long)
+2026-06-06T15:17:51.259+08:00 DEBUG 36143 --- [           main] c.m.c.mapper.MovieMapper.selectById      : <==      Total: 1
+
+MockHttpServletRequest:
+      HTTP Method = DELETE
+      Request URI = /api/admin/movies/3
+       Parameters = {}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4MDczMDI3MCwiZXhwIjoxNzgwNzMzODcwfQ.KK9-yz22iyDKYVgFUuOls93Chpq_aBEJYnsGdnFIAEI"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.movie.comment.controller.AdminController
+           Method = com.movie.comment.controller.AdminController#deleteMovie(Long)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"code":200,"message":"删除成功","data":null}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+[ERROR] Tests run: 24, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.937 s <<< FAILURE! -- in com.movie.comment.AdminTest
+[ERROR] com.movie.comment.AdminTest.deleteMovie_happyPath -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: null
+ but was: com.movie.comment.entity.Movie@7bbd944e
+	at com.movie.comment.AdminTest.deleteMovie_happyPath(AdminTest.java:506)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   AdminTest.deleteMovie_happyPath:506 
+expected: null
+ but was: com.movie.comment.entity.Movie@7bbd944e
+[INFO] 
+[ERROR] Tests run: 24, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.572 s
+[INFO] Finished at: 2026-06-06T15:17:51+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.2:test (default-test) on project movie-comment: There are test failures.
+[ERROR] 
+[ERROR] See /Users/konfer/Projects/Web实验/backend/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

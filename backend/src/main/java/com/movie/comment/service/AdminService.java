@@ -23,6 +23,9 @@ public interface AdminService {
     /** 2.5 删除影片（软删除） */
     void deleteMovie(Long movieId);
 
+    /** 管理端影片列表（含已软删除的"留痕"影片），支持关键词与排序 */
+    PageResult<AdminMovieVO> getMoviesForAdmin(String keyword, String sort, int page, int size);
+
     /** 2.6 获取所有影评（管理视图），支持过滤 */
     PageResult<AdminReviewVO> getReviews(Long movieId, Long userId, Boolean hidden, int page, int size);
 

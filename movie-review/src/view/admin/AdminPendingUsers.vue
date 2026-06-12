@@ -135,9 +135,10 @@ const fetchUsers = async () => {
   }
 }
 
+// 【合同 2.2】审核用户：PUT /admin/users/{userId}/audit + { action: "approve" | "reject" }
 const handleApprove = async (userId) => {
   try {
-    const res = await request.put(`/admin/users/${userId}/approve`)
+    const res = await request.put(`/admin/users/${userId}/audit`, { action: 'approve' })
     if (res.code === 200) {
       message.success(`用户 #${userId} 已通过审核`)
       users.value = users.value.filter(u => u.id !== userId)
@@ -151,7 +152,7 @@ const handleApprove = async (userId) => {
 
 const handleReject = async (userId) => {
   try {
-    const res = await request.put(`/admin/users/${userId}/reject`)
+    const res = await request.put(`/admin/users/${userId}/audit`, { action: 'reject' })
     if (res.code === 200) {
       message.warning(`用户 #${userId} 已被拒绝`)
       users.value = users.value.filter(u => u.id !== userId)

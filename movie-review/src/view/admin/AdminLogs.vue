@@ -82,7 +82,7 @@
         <a-skeleton active :paragraph="{ rows: 4 }" />
       </div>
 
-      <div v-else-if="logs.length === 0" class="p-12 text-center">
+      <div v-else-if="displayLogs.length === 0" class="p-12 text-center">
         <span class="text-4xl">📋</span>
         <p class="text-gray-500 mt-4 font-bold">暂无日志记录</p>
         <p class="text-xs text-gray-400">系统尚未记录任何访问日志</p>
@@ -90,7 +90,7 @@
 
       <div v-else>
         <div
-          v-for="log in logs"
+          v-for="log in displayLogs"
           :key="log.id"
           class="border-b border-gray-50 px-6 py-4 hover:bg-purple-50/30 transition-colors"
         >
@@ -150,6 +150,15 @@ const page = ref(1)
 const size = ref(20)
 const total = ref(0)
 
+// 关键词在当前页内即时过滤（用户名 / IP）
+const displayLogs = computed(() => {
+  const kw = searchKeyword.value.trim()
+  if (!kw) return logs.value
+  return logs.value.filter(
+    (l) => (l.username || '').includes(kw) || (l.ip || '').includes(kw)
+  )
+})
+
 const actionLabels = {
   login: '登录',
   register: '注册',
@@ -206,9 +215,12 @@ const fetchLogs = async () => {
   loading.value = true
   try {
     const params = { page: page.value, size: size.value }
-    if (searchKeyword.value) params.keyword = searchKeyword.value
     if (filterAction.value) params.action = filterAction.value
-    
+    // 后端 2.8 支持 startTime/endTime（yyyy-MM-ddTHH:mm:ss，不带时区）
+    if (startDate.value) params.startTime = startDate.value.format('YYYY-MM-DD') + 'T00:00:00'
+    if (endDate.value) params.endTime = endDate.value.format('YYYY-MM-DD') + 'T23:59:59'
+    // 关键词为前端在当前页内过滤（后端日志接口不支持 keyword）
+
     const res = await request.get('/admin/logs', { params })
     if (res.code === 200) {
       logs.value = res.data.list

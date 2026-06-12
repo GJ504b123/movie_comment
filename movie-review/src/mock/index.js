@@ -329,19 +329,85 @@ Mock.mock(/\/api\/admin\/logs/, 'get', () => {
 // 3. 影片与评论模块（普通用户 + 游客）
 // ----------------------------------------------------
 
-Mock.mock(/\/api\/movies(\?|$)/, 'get', () => {
+Mock.mock(/\/api\/movies(\?|$)/, 'get', (options) => {
   console.log('🔥【Mock合同拦截】前台拉取影片列表。全自动过滤已被软删除下架的影片！')
-  
+
+  // 与后端 3.1 对齐：支持 keyword 模糊搜索（标题/导演/主演）、sort 排序、page/size 分页
+  const urlObj = new URL(options.url, 'http://localhost')
+  const keyword = urlObj.searchParams.get('keyword') || ''
+  const sort = urlObj.searchParams.get('sort') || ''
+  const page = parseInt(urlObj.searchParams.get('page')) || 1
+  const size = parseInt(urlObj.searchParams.get('size')) || 10
+
   // ✂️ 核心机制：前台展示时，用 filter 把 deleted == true 的下架电影当场扣下！
-  const visibleMovies = movieDatabase.filter(m => !m.deleted)
-  
+  let visibleMovies = movieDatabase.filter(m => !m.deleted)
+
+  if (keyword) {
+    visibleMovies = visibleMovies.filter(m =>
+      (m.title || '').includes(keyword) ||
+      (m.director || '').includes(keyword) ||
+      (m.cast || '').includes(keyword)
+    )
+  }
+
+  if (sort === 'rating') {
+    visibleMovies = [...visibleMovies].sort((a, b) => b.averageScore - a.averageScore)
+  } else if (sort === 'releaseDate') {
+    visibleMovies = [...visibleMovies].sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate))
+  }
+
+  const total = visibleMovies.length
+  const start = (page - 1) * size
+
   return {
     code: 200,
     message: '成功',
     data: {
-      list: visibleMovies, // 只把活着的传给首页
-      total: visibleMovies.length,
-      page: 1, size: 10, totalPages: 1
+      list: visibleMovies.slice(start, start + size),
+      total,
+      page, size,
+      totalPages: Math.ceil(total / size)
+    }
+  }
+})
+
+// 【后端对齐】管理端影片列表：GET /api/admin/movies（含已下架影片，供后台“留痕”展示）
+Mock.mock(/\/api\/admin\/movies(\?|$)/, 'get', (options) => {
+  console.log('🔥【Mock合同拦截】后台拉取全量影片列表（含已下架留痕）')
+
+  const urlObj = new URL(options.url, 'http://localhost')
+  const keyword = urlObj.searchParams.get('keyword') || ''
+  const sort = urlObj.searchParams.get('sort') || ''
+  const page = parseInt(urlObj.searchParams.get('page')) || 1
+  const size = parseInt(urlObj.searchParams.get('size')) || 10
+
+  let list = [...movieDatabase] // 后台不过滤 deleted，已下架的也展示
+
+  if (keyword) {
+    list = list.filter(m =>
+      (m.title || '').includes(keyword) ||
+      (m.director || '').includes(keyword) ||
+      (m.cast || '').includes(keyword)
+    )
+  }
+
+  if (sort === 'rating') {
+    list.sort((a, b) => b.averageScore - a.averageScore)
+  } else if (sort === 'releaseDate') {
+    list.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate))
+  }
+
+  const total = list.length
+  const start = (page - 1) * size
+
+  return {
+    code: 200,
+    message: '成功',
+    data: {
+      list: list.slice(start, start + size),
+      total,
+      page, size,
+      totalPages: Math.ceil(total / size)
     }
   }
 })
@@ -359,7 +425,11 @@ Mock.mock(/\/api\/movies\/\d+/, 'get', (options) => {
 
   console.log(`🔥【Mock分页拦截】前台调阅电影ID: ${movieId} 的第 ${reviewPage} 页评论`)
 
-  const activeMovie = movieDatabase.find(m => m.id === movieId) || movieDatabase[0]
+  // 与后端对齐：影片不存在或已被软删除 → 404（不再兜底返回第一部影片）
+  const activeMovie = movieDatabase.find(m => m.id === movieId)
+  if (!activeMovie || activeMovie.deleted) {
+    return { code: 404, message: '影片不存在', data: null }
+  }
   // 过滤掉被隐藏的评论
   const activeReviews = reviewDatabase.filter(r => Number(r.movieId) === Number(activeMovie.id) && !r.hidden)
 
@@ -442,6 +512,25 @@ Mock.mock(/\/api\/movies\/\d+\/reviews/, 'post', (options) => {
   }
 })
 
+// 【后端对齐】点赞/取消点赞：POST /api/reviews/{id}/like
+Mock.mock(/\/api\/reviews\/\d+\/like/, 'post', (options) => {
+  const body = JSON.parse(options.body || '{}')
+  const urlParts = options.url.split('?')[0].split('/')
+  const reviewId = parseInt(urlParts[urlParts.length - 2])
+  console.log(`🔥【Mock合同拦截】评论 [ID:${reviewId}] 收到点赞动作 liked=${body.liked}`)
+
+  const review = reviewDatabase.find(r => r.id === reviewId)
+  if (!review) {
+    return { code: 404, message: '评论不存在', data: null }
+  }
+  if (body.liked) {
+    review.likeCount++
+  } else if (review.likeCount > 0) {
+    review.likeCount--
+  }
+  return { code: 200, message: body.liked ? '点赞成功' : '取消点赞', data: null }
+})
+
 // 【合同 3.4】修改自己的评论
 Mock.mock(/\/api\/reviews\/\d+/, 'put', (options) => {
   const body = JSON.parse(options.body || '{}')
@@ -471,17 +560,17 @@ Mock.mock(/\/api\/reviews\/\d+/, 'delete', (options) => {
 // 🚀 终极绝杀：影片排行榜（完美拦截已下架/软删除的影片，前台同步封杀！）
 // ========================================================
 Mock.mock(/\/api\/rankings/, 'get', (options) => {
-  // 1. 🔍 抠出前端传过来的 sort 排序参数
+  // 1. 🔍 与后端 RankingController 对齐：参数名 sortBy，取值 rating / reviewCount
   const urlObj = new URL(options.url, 'http://localhost')
-  const sortBy = urlObj.searchParams.get('sort') || 'rating'
-  
+  const sortBy = urlObj.searchParams.get('sortBy') || 'rating'
+
   console.log(`🔥【Mock合同拦截】拉取排行榜大盘，当前排序暗号: [${sortBy}]`)
-  
+
   // 🎯 核心核心修复：在大洗牌之前，先用 filter 把所有【已被下架(deleted==true)】的电影无情剔除！
   // 只有 deleted 不为 true (也就是取反 !m.deleted) 的活体电影，才有资格参与大盘洗牌！
   let aliveMovies = movieDatabase.filter(m => !m.deleted)
-  
-  if (sortBy === 'hot') {
+
+  if (sortBy === 'reviewCount' || sortBy === 'hot') {
     // 🔥 热度排行：按照评论数从高到低排序
     aliveMovies.sort((a, b) => b.reviewCount - a.reviewCount)
   } else {

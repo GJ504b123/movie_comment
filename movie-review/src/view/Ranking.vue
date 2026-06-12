@@ -105,15 +105,13 @@ const goSearch = (value) => {
   router.push({ name: 'home', query: value ? { keyword: value } : {} })
 }
 
-// 🚀 【严格对齐合同 3.6】：支持动态追加 sort 参数的请求器
+// 🚀 【对齐后端 RankingController】：参数名 sortBy，取值 rating / reviewCount
 const fetchRankings = async () => {
   loading.value = true
   try {
-    // 💡 针对明天的联动灵活做个网址适配：不管后端叫 /rankings 还是 /movies/ranking，都在这里随手一换即可！
-    console.log(`🚀 排行榜正在向后端发起汽车，暗号参数为 sort: ${currentSort.value}`)
     const res = await request.get('/rankings', {
       params: {
-        sort: currentSort.value // 🎯 把当前选中的胶囊标签传给后端！
+        sortBy: currentSort.value === 'hot' ? 'reviewCount' : 'rating',
       }
     })
     
